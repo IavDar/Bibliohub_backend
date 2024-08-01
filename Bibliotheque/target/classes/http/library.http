@@ -1,4 +1,4 @@
-## GET  /products
+## GET  /users
 GET http://{{server}}:{{port}}/api/users
 
 
@@ -7,8 +7,15 @@ POST http://{{server}}:{{port}}/api/users/register
 Content-Type: application/json
 
 {
-  "email": "adsa@dsa.ua",
-  "password": "SdcaASD123SD_dsadas"
+  "email": "qwerффффффыыыty@qwert.qw",
+  "password": "qwerty"
 }
 
+### POST /auth/login
+POST http://{{server}}:{{port}}/api/auth/login
+Content-Type: application/json
 
+{
+  "email": "admin",
+  "password": "admin"
+}

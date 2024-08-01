@@ -1,11 +1,11 @@
 package org.ac.bibliotheque.user.user_repository;
 
-import org.ac.bibliotheque.user.entity.Users;
+import org.ac.bibliotheque.user.entity.UserData;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<Users,Long> {
+public interface UserRepository extends JpaRepository<UserData,Long> {
 
-    Users findByEmail(String email);
+    UserData findByEmail(String email);
 
 
 }

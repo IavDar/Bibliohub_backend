@@ -22,6 +22,7 @@ public class UserRequestDto {
     @NotNull(message = "пароль не может быть null")
     @NotBlank(message = "пароль не может быть пустым")
     private String password;
+    private String role;
 
 
 }
