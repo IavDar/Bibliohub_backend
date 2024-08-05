@@ -28,6 +28,25 @@ public class UserData implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "name")
+    private String name;
+    @Column(name = "surname")
+    private String surname;
+    @Column(name = "country")
+    private String country;
+    @Column(name = "city")
+    private String city;
+    @Column(name = "street")
+    private String street;
+    @Column(name = "number")
+    private String number;
+    @Column(name = "zip")
+    private String zip;
+    @Column(name = "phone")
+    private String phone;
+    @Column(name = "active")
+    private boolean active;
+
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "users_role",

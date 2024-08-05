@@ -27,7 +27,9 @@ public class AuthService {
     public LoginResponseDto login(LoginRequestDto requestDto) throws AuthException {
         String email = requestDto.getEmail();
         UserData foundUser = (UserData) userService.loadUserByUsername(email);
-        if (bCryptPasswordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
+        if (!foundUser.isActive()){
+            throw new AuthException("вы заблокированы, обратитесь к администратору");
+        } else if (bCryptPasswordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
 
             String accessToken = tokenService.generateAccessToken(foundUser);
             String refreshToken = tokenService.generateRefreshToken(foundUser);
