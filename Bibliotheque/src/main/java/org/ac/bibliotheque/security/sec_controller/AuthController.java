@@ -8,7 +8,6 @@ import org.ac.bibliotheque.security.auth_dto.LoginResponseDto;
 import org.ac.bibliotheque.security.sec_dto.RefreshRequestDto;
 import org.ac.bibliotheque.security.sec_dto.TokenResponseDto;
 import org.ac.bibliotheque.security.sec_service.AuthService;
-import org.ac.bibliotheque.user.entity.UserData;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -48,6 +47,7 @@ public class AuthController {
             return "User is not authorized";
         }
     }
+
 
 
 

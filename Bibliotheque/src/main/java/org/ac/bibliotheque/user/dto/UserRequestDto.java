@@ -19,8 +19,8 @@ public class UserRequestDto {
     @NotBlank(message = "имеил не может быть пустым")
     @Schema(description = "User email", example = "dsadas@dsad.ew")
     private String email;
-    @NotNull(message = "пароль не может быть null")
-    @NotBlank(message = "пароль не может быть пустым")
+
+
     private String password;
     private String role;
 

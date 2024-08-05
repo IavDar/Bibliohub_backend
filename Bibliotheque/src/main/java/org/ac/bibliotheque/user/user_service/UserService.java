@@ -12,8 +12,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
+import java.util.List;
 
 
 @Service
@@ -44,6 +46,7 @@ public class UserService implements UserDetailsService {
             role.setTitle(roleTitle);
             role = roleRepository.save(role);
         }
+        user.setActive(true);
         user.setRoles(Collections.singleton(role));
         user = userRepository.save(user);
 
@@ -54,38 +57,98 @@ public class UserService implements UserDetailsService {
     }
 
 
+    public UserResponseDto deleteUser(UserRequestDto requestDto) {
+        UserData userData = userRepository.findByEmail(requestDto.getEmail());
+
+        if (userData == null) {
+            throw new IllegalArgumentException("Такого пользователя не существует");
+        }
+        userData.getRoles().clear();
+        userRepository.save(userData);
+        userRepository.delete(userData);
+
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setId(userData.getId());
+        userResponseDto.setEmail(userData.getEmail());
+
+        return userResponseDto;
+    }
+
+    public List<UserData> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+
+    public UserResponseDto changeRoleOnAdmin(UserRequestDto requestDto) {
+
+        UserData userData = userRepository.findByEmail(requestDto.getEmail());
+
+        String roleTitle = "ROLE_ADMIN";
+
+        Role role = roleRepository.findByTitle(roleTitle);
+        if (role == null) {
+            role = new Role();
+            role.setTitle(roleTitle);
+            role = roleRepository.save(role);
+        }
+        userData.getRoles().clear();
+        userData.getRoles().add(role);
+        userData = userRepository.save(userData);
+
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setId(userData.getId());
+        userResponseDto.setEmail(userData.getEmail());
+        return userResponseDto;
+
+    }
+
+
+    public UserResponseDto blockUser(UserRequestDto requestDto){
+        UserData userData = userRepository.findByEmail(requestDto.getEmail());
+        if (userData == null) {
+            throw new IllegalArgumentException("пользователь не найден " + requestDto.getEmail());
+        }
+        userData.setActive(false);
+        userData = userRepository.save(userData);
+
+
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setId(userData.getId());
+        userResponseDto.setEmail(userData.getEmail());
+
+        return userResponseDto;
+    }
+
+    public UserResponseDto unlockUser(UserRequestDto requestDto){
+        UserData userData = userRepository.findByEmail(requestDto.getEmail());
+        if (userData == null) {
+            throw new IllegalArgumentException("пользователь не найден " + requestDto.getEmail());
+        }
+        userData.setActive(true);
+        userData = userRepository.save(userData);
+
+
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setId(userData.getId());
+        userResponseDto.setEmail(userData.getEmail());
+
+        return userResponseDto;
+    }
+
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserData user = userRepository.findByEmail(email);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found" + email);
+            throw new UsernameNotFoundException("Пользователь не найден" + email);
         }
         return user;
     }
 }
 
 
-//    public UserResponseDto registerNewUser(UserRequestDto requestDto) {
-//        if (userRepository.findByEmail(requestDto.getEmail()) != null) {
-//            throw new IllegalArgumentException("Имеил уже используется");
-//        }
-//        Users user = new Users();
-//        user.setEmail(requestDto.getEmail());
-//        user.setPassword(requestDto.getPassword());
-//        Role role = roleRepository.findByTitle("ROLE_USER");
-//        if (role == null) {
-//            role = new Role();
-//            role.setTitle("ROLE_USER");
-//            role = roleRepository.save(role);
-//        }
-//        user.setRoles(Collections.singleton(role));
-//        user=userRepository.save(user);
-//
-//        UserResponseDto userResponseDto = new UserResponseDto();
-//        userResponseDto.setId(user.getId());
-//        userResponseDto.setEmail(user.getEmail());
-//        return userResponseDto;
-//    }
+
+
 
 
 
