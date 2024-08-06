@@ -4,10 +4,10 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.6.xsd">
 
-    <changeSet id="delete-column-table-library" author="IavDar">
-        <dropColumn  tableName="library">
-            <column  name="email"/>
-        </dropColumn>
+    <changeSet id="add-tag-library.0.1.0" author="IavDar">
+        <tagDatabase tag="v.library.0.1.0"/>
     </changeSet>
+
+    <include file="create-table-library.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

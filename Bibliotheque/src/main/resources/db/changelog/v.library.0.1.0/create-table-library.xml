@@ -31,18 +31,17 @@
                 <constraints nullable="false"/>
             </column>
 
-            <column name="zipCode" type="varchar(64)">
+            <column name="zip" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
 
-            <column name="email" type="varchar(64)">
-                <constraints nullable="false" unique="true"/>
-            </column>
-
-            <column name="phoneNumber" type="varchar(64)">
+            <column name="phone" type="varchar(64)">
                 <constraints nullable="false"/>
             </column>
 
+            <column name="librarian_id" type="bigint">
+                <constraints nullable="false" />
+            </column>
 
         </createTable>
 
