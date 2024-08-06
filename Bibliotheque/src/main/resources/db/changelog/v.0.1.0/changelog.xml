@@ -9,5 +9,10 @@
     </changeSet>
 
     <include file="create-table-library.xml" relativeToChangelogFile="true"/>
+    <include file="delete-column-table-library.xml" relativeToChangelogFile="true"/>
+    <include file="add-column-table-library.xml" relativeToChangelogFile="true"/>
+    <include file="modify-column-table-library.xml" relativeToChangelogFile="true"/>
+    <include file="rename-column-phone-table-library.xml" relativeToChangelogFile="true"/>
+    <include file="rename-column-zip-table-library.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
