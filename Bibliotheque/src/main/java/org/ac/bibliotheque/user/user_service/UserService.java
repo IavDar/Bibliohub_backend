@@ -135,6 +135,16 @@ public class UserService implements UserDetailsService {
         return userResponseDto;
     }
 
+    public UserResponseDto findUsersByEmail(String email){
+
+        UserData userData = userRepository.findByEmail(email);
+        userData = userRepository.save(userData);
+        UserResponseDto userResponseDto = new UserResponseDto();
+        userResponseDto.setEmail(userData.getEmail());
+        userResponseDto.setId(userData.getId());
+        return  userResponseDto;
+    }
+
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {

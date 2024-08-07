@@ -23,7 +23,7 @@ public class AuthController {
         try {
             return authService.login(loginRequestDto);
         } catch (AuthException e) {
-            return new LoginResponseDto(null,null,"Не корректный логин");
+            return null;
         }
     }
 

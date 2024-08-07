@@ -8,8 +8,10 @@ import org.ac.bibliotheque.security.auth_dto.LoginResponseDto;
 import org.ac.bibliotheque.security.sec_dto.TokenResponseDto;
 import org.ac.bibliotheque.user.entity.UserData;
 import org.ac.bibliotheque.user.user_service.UserService;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,16 +30,16 @@ public class AuthService {
         String email = requestDto.getEmail();
         UserData foundUser = (UserData) userService.loadUserByUsername(email);
         if (!foundUser.isActive()){
-            throw new AuthException("вы заблокированы, обратитесь к администратору");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Вы заблокированы");
         } else if (bCryptPasswordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
 
             String accessToken = tokenService.generateAccessToken(foundUser);
             String refreshToken = tokenService.generateRefreshToken(foundUser);
 
             refreshStorage.put(email, refreshToken);
-            return new LoginResponseDto(accessToken, refreshToken,"Успешно");
+            return new LoginResponseDto(foundUser.getId(),accessToken, refreshToken,"Успешно",foundUser.getRoles());
         } else {
-            throw new AuthException("Login/password not correct");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Не коректный логин или пароль");
 
         }
 
