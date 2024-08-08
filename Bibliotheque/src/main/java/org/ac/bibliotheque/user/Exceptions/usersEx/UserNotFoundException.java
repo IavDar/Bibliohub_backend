@@ -1,4 +1,4 @@
-package org.ac.bibliotheque.Exceptions.usersEx;
+package org.ac.bibliotheque.user.Exceptions.usersEx;
 
 public class UserNotFoundException extends RuntimeException {
 
