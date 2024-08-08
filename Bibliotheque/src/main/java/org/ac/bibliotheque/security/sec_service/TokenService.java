@@ -6,8 +6,8 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.ac.bibliotheque.Exceptions.InvalidTokenException;
-import org.ac.bibliotheque.Exceptions.TokenExpiredException;
+import org.ac.bibliotheque.security.ExceptionToken.InvalidTokenException;
+import org.ac.bibliotheque.security.ExceptionToken.TokenExpiredException;
 import org.ac.bibliotheque.role.Role;
 import org.ac.bibliotheque.role.repository.RoleRepository;
 import org.ac.bibliotheque.security.AuthInfo;
@@ -93,10 +93,6 @@ public class TokenService {
             }
         }
 
-//        Set<Role> roles = listOfRolesHashMaps.stream().map(roleHashMap -> roleHashMap.get("authority"))
-//                .map(roleTitle -> roleRepository.findByTitle(roleTitle))
-//                .filter(Objects::nonNull)
-//                .collect(Collectors.toSet());
 
 
         return new AuthInfo(email, roleSet);

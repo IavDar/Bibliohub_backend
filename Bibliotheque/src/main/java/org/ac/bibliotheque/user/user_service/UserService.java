@@ -12,7 +12,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +32,7 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("Имеил уже используется");
         }
         UserData user = new UserData();
+
         user.setEmail(requestDto.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(requestDto.getPassword()));
         String roleTitle = requestDto.getRole();

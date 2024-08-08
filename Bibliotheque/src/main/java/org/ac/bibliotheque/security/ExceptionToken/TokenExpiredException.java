@@ -1,4 +1,4 @@
-package org.ac.bibliotheque.Exceptions;
+package org.ac.bibliotheque.security.ExceptionToken;
 
 
 import org.springframework.security.core.AuthenticationException;
