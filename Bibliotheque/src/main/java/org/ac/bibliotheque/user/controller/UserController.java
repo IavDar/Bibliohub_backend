@@ -58,4 +58,12 @@ public class UserController {
 
     }
 
+    @GetMapping("/useremail")
+    public ResponseEntity<UserResponseDto> findUserByEmail(@RequestBody UserRequestDto requestDto){
+        UserResponseDto userResponseDto = userService.findUsersByEmail(requestDto.getEmail());
+        return  ResponseEntity.ok(userResponseDto);
+
+
+    }
+
 }
