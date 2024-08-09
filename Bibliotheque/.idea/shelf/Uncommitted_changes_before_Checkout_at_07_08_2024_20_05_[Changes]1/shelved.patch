@@ -1,0 +1,17 @@
+Index: src/main/resources/db/changelog/changelog-master.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<databaseChangeLog xmlns=\"http://www.liquibase.org/xml/ns/dbchangelog\"\r\n                   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n                   xsi:schemaLocation=\"http://www.liquibase.org/xml/ns/dbchangelog\r\n                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd\">\r\n\r\n    <changeSet id=\"0\" author=\"Vladn09\">\r\n\r\n    </changeSet>\r\n    \r\n    <include file=\"v.0.1.0/changelog.xml\" relativeToChangelogFile=\"true\"/>\r\n</databaseChangeLog>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/src/main/resources/db/changelog/changelog-master.xml b/src/main/resources/db/changelog/changelog-master.xml
+--- a/src/main/resources/db/changelog/changelog-master.xml	
++++ b/src/main/resources/db/changelog/changelog-master.xml	
+@@ -9,4 +9,5 @@
+     </changeSet>
+     
+     <include file="v.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
++    <include file="v.library.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
+ </databaseChangeLog>
+\ No newline at end of file
