@@ -27,10 +27,7 @@ public class TokenFilter extends GenericFilter {
             AuthInfo authInfo = tokenService.mapClaimsToAuthInfo(claims);
             authInfo.setAuthenticated(true);
             SecurityContextHolder.getContext().setAuthentication(authInfo);
-        }else {
-            System.out.println("Token is invalid or not present");
         }
-
         filterChain.doFilter(servletRequest, servletResponse);
     }
 
