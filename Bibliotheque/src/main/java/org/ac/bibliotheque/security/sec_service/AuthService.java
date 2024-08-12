@@ -3,15 +3,15 @@ package org.ac.bibliotheque.security.sec_service;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
+import org.ac.bibliotheque.security.Exceptions.InvalidPassword;
 import org.ac.bibliotheque.security.auth_dto.LoginRequestDto;
 import org.ac.bibliotheque.security.auth_dto.LoginResponseDto;
 import org.ac.bibliotheque.security.sec_dto.TokenResponseDto;
 import org.ac.bibliotheque.user.entity.UserData;
+import org.ac.bibliotheque.user.exception_handing.Exceptions.UserForbidden;
 import org.ac.bibliotheque.user.user_service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,16 +30,16 @@ public class AuthService {
         String email = requestDto.getEmail();
         UserData foundUser = (UserData) userService.loadUserByUsername(email);
         if (!foundUser.isActive()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Вы заблокированы");
+            throw new UserForbidden("Вы заблокированы");
         } else if (bCryptPasswordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
 
             String accessToken = tokenService.generateAccessToken(foundUser);
             String refreshToken = tokenService.generateRefreshToken(foundUser);
 
             refreshStorage.put(email, refreshToken);
-            return new LoginResponseDto(foundUser.getId(),accessToken, refreshToken,"Успешно",foundUser.getRoles());
+            return new LoginResponseDto(foundUser.getId(),foundUser.getEmail(),accessToken, refreshToken,"Успешно",foundUser.getRoles());
         } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Не коректный логин или пароль");
+            throw new InvalidPassword("Вы ввели неверный пароль");
 
         }
 
