@@ -5,7 +5,7 @@ import org.ac.bibliotheque.library.service.interfaces.LibraryService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/bibliotek")
+@RequestMapping("/bibliotek")
 public class LibraryController {
 
     private LibraryService service;

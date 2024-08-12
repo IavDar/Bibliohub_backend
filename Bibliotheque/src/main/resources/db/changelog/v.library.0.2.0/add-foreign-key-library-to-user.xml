@@ -4,11 +4,14 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="0" author="Vladn09">
+    <changeSet id="add-foreign-key-library-to-user" author="IavDar">
+
+        <addForeignKeyConstraint baseTableName="library"
+                                 baseColumnNames="librarian_id"
+                                 constraintName="fk_library_to_user"
+                                 referencedTableName="users"
+                                 referencedColumnNames="id"/>
 
     </changeSet>
-    
-    <include file="v.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.library.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.library.0.2.0/changelog.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>
