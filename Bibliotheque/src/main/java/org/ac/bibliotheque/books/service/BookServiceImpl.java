@@ -98,7 +98,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getBookByAuthorSurname(String authorSurname) {
-        Book book = repository.findByAuthor(authorSurname);
+        Book book = repository.findByAuthorName(authorSurname);
         return mappingService.mapEntityToDto(book);
     }
 

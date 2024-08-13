@@ -3,7 +3,7 @@ package org.ac.bibliotheque.books.domain.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "book")
+@Table(name = "books")
 public class Book {
 
 
