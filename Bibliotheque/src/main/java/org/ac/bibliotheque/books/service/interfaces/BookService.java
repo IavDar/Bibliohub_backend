@@ -11,12 +11,12 @@ public interface BookService {
     BookDto update(BookDto book);
     BookDto getBookById(Long id);
     BookDto getBookByTitle(String title);
-    BookDto getBookByIsbn(Long isbn);
+    BookDto getBookByIsbn(String isbn);
     BookDto getBookByAuthorName(String authorName);
     BookDto getBookByAuthorSurname(String authorSurname);
 
     void deleteBookById(Long id);
-    void deleteBookByIsbn(Long isbn);
+    void deleteBookByIsbn(String isbn);
     void deleteBookByTitle(String title);
 
     List<BookDto> getAllBooks();

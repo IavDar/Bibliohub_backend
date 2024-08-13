@@ -3,7 +3,7 @@ package org.ac.bibliotheque.books.domain.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "book")
+@Table(name = "books")
 public class Book {
 
 
@@ -22,10 +22,10 @@ public class Book {
     private String authorSurname;
 
     @Column(name = "year")
-    private Long year;
+    private String year;
 
     @Column(name = "isbn")
-    private Long isbn;
+    private String isbn;
 
     @Column(name = "publisher")
     private String publisher;
@@ -75,8 +75,8 @@ public class Book {
         return title;
     }
 
-    public void setTitle(String bookName) {
-        this.title = bookName;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getAuthorName() {
@@ -95,19 +95,19 @@ public class Book {
         this.authorSurname = authorSurname;
     }
 
-    public Long getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(Long year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
-    public Long getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(Long isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 

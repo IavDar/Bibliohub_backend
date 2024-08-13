@@ -5,7 +5,7 @@
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
     <changeSet id="changelog0.2.0" author="sergej">
-        <tagDatabase tag="v.0.2.0"/>
+        <tagDatabase tag="v.books.0.2.0"/>
     </changeSet>
     <include file="create-table-books.xml" relativeToChangelogFile="true"/>
 
