@@ -4,12 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="0" author="Vladn09">
-
+    <changeSet id="changelog0.2.0" author="sergej">
+        <tagDatabase tag="v.0.2.0"/>
     </changeSet>
-  
-    <include file="v.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.library.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.books.0.2.0/changelog.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-books.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>
