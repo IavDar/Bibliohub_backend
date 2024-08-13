@@ -4,15 +4,17 @@ import org.ac.bibliotheque.books.domain.dto.BookDto;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/books")
 public class BookController {
 
-    private final BookService service;
+    private BookService service;
 
-    public BookController(BookService service) {
-        this.service = service;
-    }
+//    public BookController(BookService service) {
+//        this.service = service;
+//    }
 
     //  CRUD Create Read Update Delete // Post Get Put Delete
     //  localhost:8080
@@ -47,9 +49,18 @@ public class BookController {
         if (isbn != null){
             service.deleteBookByIsbn(isbn);
         } else if (title != null) {
-            service.deleteBookByBookName(title);
+            service.deleteBookByTitle(title);
         }
     }
 
+    @GetMapping
+    public List<BookDto> getAllBooks() {
+        return service.getAllBooks();
+    }
+
+    @GetMapping("/books/title")
+    public BookDto getBooksByTitle(@RequestParam String title) {
+        return service.getBookByTitle(title);
+    }
 
 }

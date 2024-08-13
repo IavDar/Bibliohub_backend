@@ -7,6 +7,8 @@ import org.ac.bibliotheque.books.service.interfaces.BookService;
 import org.ac.bibliotheque.books.service.mapping.BookMappingService;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 public class BookServiceImpl implements BookService {
 
 
@@ -69,29 +71,35 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookDto getBookById(Long id) {
-        Book dto = repository.getById(id);
+        Book book = repository.getById(id);
 
-        return mappingService.mapEntityToDto(dto);
+        return mappingService.mapEntityToDto(book);
     }
 
     @Override
-    public BookDto getBookByBookName(String bookName) {
-        return null;
+    public BookDto getBookByTitle(String title) {
+        Book book = repository.findByTitle(title);
+        return mappingService.mapEntityToDto(book);
     }
 
     @Override
     public BookDto getBookByIsbn(Long isbn) {
-        return null;
+        Book book = repository.findByIsbn(isbn);
+        return mappingService.mapEntityToDto(book);
     }
 
     @Override
-    public BookDto getBookByAuthotName(String authorName) {
-        return null;
+    public BookDto getBookByAuthorName(String authorName) {
+        String[] arguments = authorName.split(" ");
+        // splitt into two parts
+        Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
+        return mappingService.mapEntityToDto(book);
     }
 
     @Override
-    public BookDto getBookByAuthorSurname(String authorsurname) {
-        return null;
+    public BookDto getBookByAuthorSurname(String authorSurname) {
+        Book book = repository.findByAuthor(authorSurname);
+        return mappingService.mapEntityToDto(book);
     }
 
     @Override
@@ -101,12 +109,19 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteBookByIsbn(Long isbn) {
-
+        repository.deleteByIsbn(isbn);
     }
 
     @Override
-    public void deleteBookByBookName(String bookName) {
+    public void deleteBookByBookName(String title) {
+        repository.deleteByTitle(title);
+    }
 
+    @Override
+    public List<BookDto> getAllBooks() {
+        List.of(repository.findAll());
+        // TODO change List of Book into List Dto
+        return null;
     }
 
 //    @Override

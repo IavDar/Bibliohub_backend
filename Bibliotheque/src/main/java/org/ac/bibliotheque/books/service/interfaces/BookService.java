@@ -2,19 +2,22 @@ package org.ac.bibliotheque.books.service.interfaces;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
 
+import java.util.List;
+
 public interface BookService {
 
 
     BookDto addBook(BookDto book);
     BookDto update(BookDto book);
     BookDto getBookById(Long id);
-    BookDto getBookByBookName(String bookName);
+    BookDto getBookByTitle(String title);
     BookDto getBookByIsbn(Long isbn);
-    BookDto getBookByAuthotName(String authorName);
-    BookDto getBookByAuthorSurname(String authorsurname);
+    BookDto getBookByAuthorName(String authorName);
+    BookDto getBookByAuthorSurname(String authorSurname);
 
     void deleteBookById(Long id);
     void deleteBookByIsbn(Long isbn);
-    void deleteBookByBookName(String bookName);
+    void deleteBookByTitle(String title);
 
+    List<BookDto> getAllBooks();
 }
