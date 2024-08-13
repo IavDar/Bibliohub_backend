@@ -113,7 +113,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBookByBookName(String title) {
+    public void deleteBookByTitle(String title) {
         repository.deleteByTitle(title);
     }
 
