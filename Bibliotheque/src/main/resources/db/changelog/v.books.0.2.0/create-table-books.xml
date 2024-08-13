@@ -50,5 +50,18 @@
 
         </createTable>
 
+
+
+    </changeSet>
+
+    <changeSet id="update-table-book" author="sergej">
+        <modifyDataType
+                tableName="books"
+                columnName="year"
+                newDataType="varchar(4)" />
+        <modifyDataType
+                tableName="books"
+                columnName="isbn"
+                newDataType="varchar(32)" />
     </changeSet>
 </databaseChangeLog>

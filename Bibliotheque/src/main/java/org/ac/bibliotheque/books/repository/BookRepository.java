@@ -8,15 +8,15 @@ import java.util.List;
 public interface BookRepository extends JpaRepository<Book, Long> {
 
     Book findByTitle(String title);
-    Book findByIsbn(Long isbn);
+    Book findByIsbn(String isbn);
     Book findByAuthorName(String author);
     Book findByAuthorNameAndAuthorSurname(String authorName, String authorSurname);
 
     List<Book> findAllByLibraryId(Long libraryId);
-    List<Book> findAllByYear(Long year);
+    List<Book> findAllByYear(String year);
 
 
-    void deleteByIsbn(Long isbn);
+    void deleteByIsbn(String isbn);
     void deleteByTitle(String title);
 
 

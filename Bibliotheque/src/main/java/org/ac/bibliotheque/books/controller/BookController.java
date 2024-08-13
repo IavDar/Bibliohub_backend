@@ -45,7 +45,7 @@ public class BookController {
     @DeleteMapping
     public void delete(
             @RequestParam(required = false) String title,
-            @RequestParam(required = false) Long isbn) {
+            @RequestParam(required = false) String isbn) {
         if (isbn != null){
             service.deleteBookByIsbn(isbn);
         } else if (title != null) {

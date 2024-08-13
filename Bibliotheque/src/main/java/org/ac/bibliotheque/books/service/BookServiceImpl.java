@@ -83,7 +83,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto getBookByIsbn(Long isbn) {
+    public BookDto getBookByIsbn(String isbn) {
         Book book = repository.findByIsbn(isbn);
         return mappingService.mapEntityToDto(book);
     }
@@ -108,7 +108,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBookByIsbn(Long isbn) {
+    public void deleteBookByIsbn(String isbn) {
         repository.deleteByIsbn(isbn);
     }
 
