@@ -29,11 +29,9 @@ public class LibraryController {
         return service.update(library);
     }
 
-    @DeleteMapping
-    public void delete(@RequestParam Long id) {
-
-            service.deleteById(id);
-
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable(name = "id") Long id) {
+        service.deleteById(id);
     }
 
     @ExceptionHandler(LibraryNotFoundException.class)

@@ -46,7 +46,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/users/useremail").permitAll()
                         .requestMatchers(HttpMethod.POST, "/bibliotek/register").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/bibliotek").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/bibliotek").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/bibliotek/{id}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/update").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
