@@ -24,38 +24,38 @@ public class AdviceExceptionController {
         return new ResponseEntity<>(new ApiExceptionInfo(e.getMessage()), HttpStatus.FORBIDDEN);
     }
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleIllegalArgumentException(IllegalArgumentException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ApiExceptionInfo> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(InvalidRoleException.class)
-    public ResponseEntity<String> invalidRoleException(InvalidRoleException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ApiExceptionInfo> invalidRoleException(InvalidRoleException ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidPassword.class)
-    public ResponseEntity<String> invalidPassword(InvalidPassword ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ApiExceptionInfo> invalidPassword(InvalidPassword ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.BAD_REQUEST);
     }
     @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<String> invalidPassword(InvalidTokenException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ApiExceptionInfo> invalidToken(InvalidTokenException ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.UNAUTHORIZED);
     }
     @ExceptionHandler(TokenExpiredException.class)
-    public ResponseEntity<String> invalidPassword(TokenExpiredException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ApiExceptionInfo> TokenIsExpired(TokenExpiredException ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.UNAUTHORIZED);
     }
     @ExceptionHandler(EmailIsUsingException.class)
-    public ResponseEntity<String> emailIsUsing(EmailIsUsingException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ApiExceptionInfo> emailIsUsing(EmailIsUsingException ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.BAD_REQUEST);
 
     }@ExceptionHandler(EmailIsNotValid.class)
-    public ResponseEntity<String> invalidEmail(EmailIsNotValid ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ApiExceptionInfo> invalidEmail(EmailIsNotValid ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(PasswordIsNotValid.class)
-    public ResponseEntity<String> invalidPassword(PasswordIsNotValid ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ApiExceptionInfo> invalidPassword(PasswordIsNotValid ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
     }
 }
 

@@ -70,9 +70,9 @@ public class UserController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<UserResponseDto> updateUser(@RequestBody UserUpdateDto updateDto) {
-        UserResponseDto userResponseDto = userService.updateUser(updateDto);
-        return ResponseEntity.ok(userResponseDto);
+    public ResponseEntity<UserData> updateUser(@RequestBody UserUpdateDto updateDto) {
+       UserData userData = userService.updateUser(updateDto);
+        return ResponseEntity.ok(userData);
     }
 
 }

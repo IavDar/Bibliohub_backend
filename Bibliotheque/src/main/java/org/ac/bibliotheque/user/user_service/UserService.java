@@ -68,6 +68,7 @@ public class UserService implements UserDetailsService {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(user.getId());
         userResponseDto.setEmail(user.getEmail());
+        userResponseDto.setMessage("Вы умпешно зарегистрировались");
         return userResponseDto;
     }
 
@@ -173,7 +174,7 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserResponseDto updateUser(UserUpdateDto updateDto) {
+    public UserData updateUser(UserUpdateDto updateDto) {
 
         UserData userData = userRepository.findByEmail(updateDto.getEmail()).orElseThrow(() ->
                 new UserNotFoundException(String.format("Пользователь %s не найден", updateDto.getEmail())));
@@ -189,11 +190,10 @@ public class UserService implements UserDetailsService {
 
 
         userData = userRepository.save(userData);
-        UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setId(userData.getId());
-        userResponseDto.setEmail(userData.getEmail());
-        return userResponseDto;
+        return userData;
     }
+
+
 
 
     @Override
