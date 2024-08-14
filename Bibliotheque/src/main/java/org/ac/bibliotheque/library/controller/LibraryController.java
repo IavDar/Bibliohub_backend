@@ -1,11 +1,14 @@
 package org.ac.bibliotheque.library.controller;
 
 import org.ac.bibliotheque.library.domain.dto.LibraryDto;
+import org.ac.bibliotheque.library.exception_handling.Response;
+import org.ac.bibliotheque.library.exception_handling.exceptions.LibraryNotFoundException;
 import org.ac.bibliotheque.library.service.interfaces.LibraryService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/bibliotek")
+@RequestMapping("/bibliotek")
 public class LibraryController {
 
     private LibraryService service;
@@ -31,5 +34,11 @@ public class LibraryController {
 
             service.deleteById(id);
 
+    }
+
+    @ExceptionHandler(LibraryNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(LibraryNotFoundException e) {
+        return new Response(e.getMessage());
     }
 }

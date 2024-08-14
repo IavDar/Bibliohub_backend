@@ -3,8 +3,10 @@ package org.ac.bibliotheque.user.user_service;
 import lombok.RequiredArgsConstructor;
 import org.ac.bibliotheque.role.Role;
 import org.ac.bibliotheque.role.repository.RoleRepository;
+import org.ac.bibliotheque.user.exception_handing.Exceptions.*;
 import org.ac.bibliotheque.user.dto.UserRequestDto;
 import org.ac.bibliotheque.user.dto.UserResponseDto;
+import org.ac.bibliotheque.user.dto.UserUpdateDto;
 import org.ac.bibliotheque.user.entity.UserData;
 import org.ac.bibliotheque.user.user_repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -28,18 +30,31 @@ public class UserService implements UserDetailsService {
 
 
     public UserResponseDto registerNewUser(UserRequestDto requestDto) {
-        if (userRepository.findByEmail(requestDto.getEmail()) != null) {
-            throw new IllegalArgumentException("Имеил уже используется");
+        if (requestDto == null) {
+            throw new IllegalArgumentException("Запрос не может быть null");
         }
+
+        if (!isValidEmail(requestDto.getEmail())) {
+            throw new EmailIsNotValid("Некорректный формат email");
+        }
+
+        if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
+            throw new EmailIsUsingException("Имеил уже используется");
+        }
+
+        if (!isValidPassword(requestDto.getPassword())) {
+            throw new PasswordIsNotValid("Пароль должен содержать как минимум одну заглавную букву, одну цифру и один специальный символ");
+        }
+
         UserData user = new UserData();
 
         user.setEmail(requestDto.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(requestDto.getPassword()));
+
         String roleTitle = requestDto.getRole();
         if (!roleTitle.equals("ROLE_USER") && !roleTitle.equals("ROLE_LIBRARY")) {
-            throw new IllegalArgumentException("Недопустимая роль: " + roleTitle);
+            throw new InvalidRoleException("Недопустимая роль: " + roleTitle);
         }
-
         Role role = roleRepository.findByTitle(roleTitle);
         if (role == null) {
             role = new Role();
@@ -58,11 +73,12 @@ public class UserService implements UserDetailsService {
 
 
     public UserResponseDto deleteUser(UserRequestDto requestDto) {
-        UserData userData = userRepository.findByEmail(requestDto.getEmail());
-
-        if (userData == null) {
-            throw new IllegalArgumentException("Такого пользователя не существует");
+        if (requestDto == null || requestDto.getEmail() == null || requestDto.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email не может быть null или пустым");
         }
+        UserData userData = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", requestDto.getEmail())));
+
         userData.getRoles().clear();
         userRepository.save(userData);
         userRepository.delete(userData);
@@ -78,10 +94,13 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-
     public UserResponseDto changeRoleOnAdmin(UserRequestDto requestDto) {
 
-        UserData userData = userRepository.findByEmail(requestDto.getEmail());
+        UserData userData = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", requestDto.getEmail())));
+        if (userData.getRoles().iterator().next().getTitle().equals("ROLE_ADMIN")) {
+            throw new IllegalArgumentException("Этот пользователь уже назначен админом");
+        }
 
         String roleTitle = "ROLE_ADMIN";
 
@@ -103,14 +122,12 @@ public class UserService implements UserDetailsService {
     }
 
 
-    public UserResponseDto blockUser(UserRequestDto requestDto){
-        UserData userData = userRepository.findByEmail(requestDto.getEmail());
-        if (userData == null) {
-            throw new IllegalArgumentException("пользователь не найден " + requestDto.getEmail());
-        }
+    public UserResponseDto blockUser(UserRequestDto requestDto) {
+        UserData userData = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", requestDto.getEmail())));
+
         userData.setActive(false);
         userData = userRepository.save(userData);
-
 
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(userData.getId());
@@ -119,11 +136,10 @@ public class UserService implements UserDetailsService {
         return userResponseDto;
     }
 
-    public UserResponseDto unlockUser(UserRequestDto requestDto){
-        UserData userData = userRepository.findByEmail(requestDto.getEmail());
-        if (userData == null) {
-            throw new IllegalArgumentException("пользователь не найден " + requestDto.getEmail());
-        }
+    public UserResponseDto unlockUser(UserRequestDto requestDto) {
+        UserData userData = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", requestDto.getEmail())));
+
         userData.setActive(true);
         userData = userRepository.save(userData);
 
@@ -135,24 +151,64 @@ public class UserService implements UserDetailsService {
         return userResponseDto;
     }
 
-    public UserResponseDto findUsersByEmail(String email){
+    public UserUpdateDto findUsersByEmail(String email) {
 
-        UserData userData = userRepository.findByEmail(email);
+        UserData userData = userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", email)));
+
+
+        UserUpdateDto userInfo = new UserUpdateDto();
+        userInfo.setId(userData.getId());
+        userInfo.setEmail(userData.getEmail());
+        userInfo.setName(userData.getName());
+        userInfo.setSurname(userData.getSurname());
+        userInfo.setCountry(userData.getCountry());
+        userInfo.setCity(userData.getCity());
+        userInfo.setStreet(userData.getStreet());
+        userInfo.setNumber(userData.getNumber());
+        userInfo.setZip(userData.getZip());
+        userInfo.setPhone(userData.getPhone());
+        userInfo.setActive(userData.isActive());
+        return userInfo;
+    }
+
+
+    public UserResponseDto updateUser(UserUpdateDto updateDto) {
+
+        UserData userData = userRepository.findByEmail(updateDto.getEmail()).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", updateDto.getEmail())));
+        userData.setName(updateDto.getName());
+        userData.setSurname(updateDto.getSurname());
+        userData.setCity(updateDto.getCity());
+        userData.setCountry(updateDto.getCountry());
+        userData.setStreet(updateDto.getStreet());
+        userData.setNumber(updateDto.getNumber());
+        userData.setZip(updateDto.getZip());
+        userData.setPhone(updateDto.getPhone());
+        userData.setId(userData.getId());
+
+
         userData = userRepository.save(userData);
         UserResponseDto userResponseDto = new UserResponseDto();
-        userResponseDto.setEmail(userData.getEmail());
         userResponseDto.setId(userData.getId());
-        return  userResponseDto;
+        userResponseDto.setEmail(userData.getEmail());
+        return userResponseDto;
     }
 
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserData user = userRepository.findByEmail(email);
-        if (user == null) {
-            throw new UsernameNotFoundException("Пользователь не найден" + email);
-        }
-        return user;
+        return userRepository.findByEmail(email).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", email)));
+    }
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        return email.matches(emailRegex);
+    }
+
+    private boolean isValidPassword(String password) {
+        String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!_*]).{8,}$";
+        return password.matches(passwordRegex);
     }
 }
 
