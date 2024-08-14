@@ -47,6 +47,7 @@ public class UserService implements UserDetailsService {
         }
 
         UserData user = new UserData();
+
         user.setEmail(requestDto.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(requestDto.getPassword()));
 

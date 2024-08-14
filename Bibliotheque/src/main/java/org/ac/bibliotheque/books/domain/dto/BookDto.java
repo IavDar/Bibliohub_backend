@@ -9,26 +9,26 @@ public class BookDto {
     private String title;
     private String authorName;
     private String authorSurname;
-    private Long year;
-    private Long isbn;
+    private String year;
+    private String isbn;
     private String publisher;
     private Long libraryId;
     private Long quantity;
     private Long available;
 
-    public Long getYear() {
+    public String getYear() {
         return year;
     }
 
-    public void setYear(Long year) {
+    public void setYear(String year) {
         this.year = year;
     }
 
-    public Long getIsbn() {
+    public String getIsbn() {
         return isbn;
     }
 
-    public void setIsbn(Long isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 

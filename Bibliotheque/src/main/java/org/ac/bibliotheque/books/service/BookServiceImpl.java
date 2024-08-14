@@ -83,7 +83,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto getBookByIsbn(Long isbn) {
+    public BookDto getBookByIsbn(String isbn) {
         Book book = repository.findByIsbn(isbn);
         return mappingService.mapEntityToDto(book);
     }
@@ -92,8 +92,13 @@ public class BookServiceImpl implements BookService {
     public BookDto getBookByAuthorName(String authorName) {
         String[] arguments = authorName.split(" ");
         // splitt into two parts
-        Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
-        return mappingService.mapEntityToDto(book);
+        if (arguments[1] == null) {
+            Book book = repository.findByAuthorName(authorName);
+            return mappingService.mapEntityToDto(book);
+        } else {
+            Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
+            return mappingService.mapEntityToDto(book);
+        }
     }
 
     @Override
@@ -108,7 +113,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public void deleteBookByIsbn(Long isbn) {
+    public void deleteBookByIsbn(String isbn) {
         repository.deleteByIsbn(isbn);
     }
 

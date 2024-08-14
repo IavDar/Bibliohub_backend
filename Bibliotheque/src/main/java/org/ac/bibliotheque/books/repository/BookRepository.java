@@ -13,10 +13,10 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     Book findByAuthorNameAndAuthorSurname(String authorName, String authorSurname);
 
     List<Book> findAllByLibraryId(Long libraryId);
-    List<Book> findAllByYear(Long year);
+    List<Book> findAllByYear(String year);
 
 
-    void deleteByIsbn(Long isbn);
+    void deleteByIsbn(String isbn);
     void deleteByTitle(String title);
 
 
