@@ -37,12 +37,12 @@ public class BookController {
     }
 */
 
-    @PutMapping
+    @PutMapping("/books")
     public BookDto update(@RequestBody BookDto book) {
         return service.update(book);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/books")
     public void delete(
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String isbn) {
@@ -55,12 +55,28 @@ public class BookController {
 
     @GetMapping
     public List<BookDto> getAllBooks() {
+        // как соединить этот метод со следующим? TODO
         return service.getAllBooks();
     }
 
-    @GetMapping("/books/title")
-    public BookDto getBooksByTitle(@RequestParam String title) {
-        return service.getBookByTitle(title);
+    @GetMapping("/books")
+    public BookDto getBooksByParameter(@RequestParam String param) {
+
+        if (param != null) {
+            return null;
+            //  through exception of non prapameter TODO
+        } else if (service.getBookByIsbn(param) != null) {
+            return  service.getBookByIsbn(param);
+        } else if (service.getBookByTitle(param) != null) {
+            return service.getBookByTitle(param);
+        } else if ( service.getBookByAuthorName(param) != null) {
+            return service.getBookByAuthorName(param) ;
+        } else {
+            return null;
+            // TODO Exception: no book has been found
+        }
+
+
     }
 
 }

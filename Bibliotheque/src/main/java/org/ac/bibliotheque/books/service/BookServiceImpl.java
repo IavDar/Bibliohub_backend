@@ -92,8 +92,13 @@ public class BookServiceImpl implements BookService {
     public BookDto getBookByAuthorName(String authorName) {
         String[] arguments = authorName.split(" ");
         // splitt into two parts
-        Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
-        return mappingService.mapEntityToDto(book);
+        if (arguments[1] == null) {
+            Book book = repository.findByAuthorName(authorName);
+            return mappingService.mapEntityToDto(book);
+        } else {
+            Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
+            return mappingService.mapEntityToDto(book);
+        }
     }
 
     @Override
