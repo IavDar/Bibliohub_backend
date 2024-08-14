@@ -1,6 +1,9 @@
 package org.ac.bibliotheque.library.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Objects;
 
 @Entity
@@ -11,20 +14,30 @@ public class Library {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
+
+    @NotNull(message = "Library name cannot be null")
+    @NotBlank(message = "Library name cannot be empty" )
     @Column(name = "name")
     private String name;
+
     @Column(name = "country")
     private String country;
+
     @Column(name = "city")
     private String city;
+
     @Column(name = "street")
     private String street;
+
     @Column(name = "number")
     private String number;
+
     @Column(name = "zip")
     private String zip;
+
     @Column(name = "phone")
     private String phone;
+
     @Column(name = "librarian_id")
     private Long librarian_id;
 

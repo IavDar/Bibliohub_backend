@@ -2,6 +2,8 @@ package org.ac.bibliotheque.library.service;
 
 import org.ac.bibliotheque.library.domain.dto.LibraryDto;
 import org.ac.bibliotheque.library.domain.entity.Library;
+import org.ac.bibliotheque.library.exception_handling.exceptions.LibraryNotFoundException;
+import org.ac.bibliotheque.library.exception_handling.exceptions.ValueConstraintException;
 import org.ac.bibliotheque.library.repository.LibraryRepository;
 import org.ac.bibliotheque.library.service.interfaces.LibraryService;
 import org.ac.bibliotheque.library.service.mapping.LibraryMappingService;
@@ -22,7 +24,12 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public LibraryDto save(LibraryDto dto) {
         Library entity = mappingService.mapDtoToEntity(dto);
-        repository.save(entity);
+        try {
+            repository.save(entity);
+        } catch (Exception e) {
+            throw new ValueConstraintException(e.getMessage());
+        }
+
         return mappingService.mapEntityToDto(entity);
     }
 
@@ -32,7 +39,7 @@ public class LibraryServiceImpl implements LibraryService {
         Library library = repository.findById(dto.getId()).orElse(null);
 
         if (library == null) {
-            return null;
+            throw new LibraryNotFoundException(String.format("Library with id %d not found", dto.getId()));
         }  if (dto.getName() != null) {
             library.setName(dto.getName());
         }  if (dto.getCountry() != null) {
@@ -56,6 +63,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public void deleteById(Long id) {
+        repository.findById(id).orElseThrow(() -> new LibraryNotFoundException(String.format("Library with id %s not found", id)));
         repository.deleteById(id);
     }
 
