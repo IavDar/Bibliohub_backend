@@ -12,6 +12,7 @@ public interface BookService {
     BookDto getBookById(Long id);
     BookDto getBookByTitle(String title);
     BookDto getBookByIsbn(String isbn);
+    BookDto getBookByAuthor(String author);
     BookDto getBookByAuthorName(String authorName);
     BookDto getBookByAuthorSurname(String authorSurname);
 

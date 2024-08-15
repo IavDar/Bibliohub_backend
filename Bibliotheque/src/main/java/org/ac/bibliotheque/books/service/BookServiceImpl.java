@@ -42,25 +42,25 @@ public class BookServiceImpl implements BookService {
         if (dto.getIsbn() != null){
             book.setIsbn(dto.getIsbn());
         }
-        if (dto.getAuthorName()!= null){
+        if (dto.getAuthorName() != null){
             book.setAuthorName(dto.getAuthorName());
         }
-        if (dto.getAuthorSurname()!= null){
+        if (dto.getAuthorSurname() != null){
             book.setAuthorSurname(dto.getAuthorSurname());
         }
-        if (dto.getYear()!= null){
+        if (dto.getYear() != null){
             book.setYear(dto.getYear());
         }
-        if (dto.getPublisher()!= null){
+        if (dto.getPublisher() != null){
             book.setPublisher(dto.getPublisher());
         }
-        if (dto.getQuantity()!= null){
+        if (dto.getQuantity() != null){
             book.setQuantity(dto.getQuantity());
         }
-        if (dto.getAvailable()!= null){
+        if (dto.getAvailable() != null){
             book.setAvailable(dto.getAvailable());
         }
-        if (dto.getLibraryId()!= null){
+        if (dto.getLibraryId() != null){
             book.setLibraryId(dto.getLibraryId());
         }
 
@@ -89,16 +89,21 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto getBookByAuthorName(String authorName) {
-        String[] arguments = authorName.split(" ");
+    public BookDto getBookByAuthor(String author) {
+        String[] arguments = author.split(" ");
         // splitt into two parts
         if (arguments[1] == null) {
-            Book book = repository.findByAuthorName(authorName);
-            return mappingService.mapEntityToDto(book);
+            return getBookByAuthorSurname(author);
         } else {
             Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
             return mappingService.mapEntityToDto(book);
         }
+    }
+
+    @Override
+    public BookDto getBookByAuthorName(String authorName) {
+        Book book = repository.findByAuthorName(authorName);
+        return mappingService.mapEntityToDto(book);
     }
 
     @Override

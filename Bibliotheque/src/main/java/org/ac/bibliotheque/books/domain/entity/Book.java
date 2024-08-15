@@ -1,6 +1,9 @@
 package org.ac.bibliotheque.books.domain.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "books")
@@ -12,6 +15,12 @@ public class Book {
     @Column(name = "id")
     private Long id;
 
+    @NotNull(message = "Book title cannot be null")
+    @NotBlank(message = "Book title cannot be empty")
+    @Pattern(
+            regexp = "[A-Za-z]{2,}",
+            message = "Book title should be at least 3 character length "
+    )
     @Column(name = "title")
     private String title;
 
@@ -21,9 +30,19 @@ public class Book {
     @Column(name = "author_surname")
     private String authorSurname;
 
+    @Pattern(
+            regexp = "[0-9]{4}",
+            message = "Book year should have only 4 digits"
+    )
     @Column(name = "year")
     private String year;
 
+    @NotNull(message = "Book title cannot be null")
+    @NotBlank(message = "Book title cannot be empty")
+    @Pattern(
+            regexp = "[-0-9]{13,}",
+            message = "Book ISBN should be at least 13 counts length "
+    )
     @Column(name = "isbn")
     private String isbn;
 
