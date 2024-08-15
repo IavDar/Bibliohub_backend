@@ -59,6 +59,24 @@ public class BookController {
         return service.getAllBooks();
     }
 
+
+    @GetMapping("/books/title")
+    public BookDto getBooksByTitle(@RequestParam String title){
+        return service.getBookByTitle(title);
+    }
+
+    @GetMapping("/books/isbn")
+    public BookDto getBooksByIsbn(@RequestParam String isbn){
+        return service.getBookByIsbn(isbn);
+    }
+
+
+    @GetMapping("/books/author")
+    public BookDto getBooksByAuthor(@RequestParam String author){
+        return service.getBookByAuthorName(author);
+    }
+
+    /*
     @GetMapping("/books")
     public BookDto getBooksByParameter(@RequestParam String param) {
 
@@ -75,8 +93,7 @@ public class BookController {
             return null;
             // TODO Exception: no book has been found
         }
-
-
     }
+*/
 
 }
