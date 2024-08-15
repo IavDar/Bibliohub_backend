@@ -1,7 +1,12 @@
 package org.ac.bibliotheque.books.controller;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
+import org.ac.bibliotheque.books.exception_handling.Response;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookAuthorNotFoundException;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookIsbnNotFoundException;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -73,7 +78,25 @@ public class BookController {
 
     @GetMapping("/books/author")
     public BookDto getBooksByAuthor(@RequestParam String author){
-        return service.getBookByAuthorName(author);
+        return service.getBookByAuthor(author);
+    }
+
+    @ExceptionHandler(BookTitleNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(BookTitleNotFoundException e) {
+        return new Response(e.getMessage());
+    }
+
+    @ExceptionHandler(BookIsbnNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(BookIsbnNotFoundException e) {
+        return new Response(e.getMessage());
+    }
+
+    @ExceptionHandler(BookAuthorNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(BookAuthorNotFoundException e) {
+        return new Response(e.getMessage());
     }
 
     /*
