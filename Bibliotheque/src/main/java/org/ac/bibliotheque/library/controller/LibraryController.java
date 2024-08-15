@@ -32,6 +32,7 @@ public class LibraryController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable(name = "id") Long id) {
         service.deleteById(id);
+
     }
 
     @ExceptionHandler(LibraryNotFoundException.class)
