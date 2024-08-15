@@ -7,6 +7,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ac.bibliotheque.role.Role;
+
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -20,6 +23,16 @@ public class UserResponseDto {
     @NotBlank(message = "имеил не может быть пустым")
     @Schema(description = "User email", example = "dsadas@dsad.ew")
     private String email;
+    private String name;
+    private String surname;
+    private String country;
+    private String city;
+    private String street;
+    private String number;
+    private String zip;
+    private String phone;
+    private Set<Role> role;
+    private String message;
 
 
 }
