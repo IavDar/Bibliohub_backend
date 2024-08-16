@@ -1,7 +1,7 @@
 package org.ac.bibliotheque.books.controller;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
-import org.ac.bibliotheque.books.exception_handling.Response;
+import org.ac.bibliotheque.books.exception_handling.ResponseBook;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookAuthorNotFoundException;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookIsbnNotFoundException;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
@@ -102,20 +102,20 @@ public class BookController {
 
     @ExceptionHandler(BookTitleNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Response handleException(BookTitleNotFoundException e) {
-        return new Response(e.getMessage());
+    public ResponseBook handleException(BookTitleNotFoundException e) {
+        return new ResponseBook(e.getMessage());
     }
 
     @ExceptionHandler(BookIsbnNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Response handleException(BookIsbnNotFoundException e) {
-        return new Response(e.getMessage());
+    public ResponseBook handleException(BookIsbnNotFoundException e) {
+        return new ResponseBook(e.getMessage());
     }
 
     @ExceptionHandler(BookAuthorNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Response handleException(BookAuthorNotFoundException e) {
-        return new Response(e.getMessage());
+    public ResponseBook handleException(BookAuthorNotFoundException e) {
+        return new ResponseBook(e.getMessage());
     }
 
     /*

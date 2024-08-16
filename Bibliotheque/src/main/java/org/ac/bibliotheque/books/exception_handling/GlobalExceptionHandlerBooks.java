@@ -9,24 +9,24 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class GlobalExceptionHandlerBooks {
 
     @ExceptionHandler(BookTitleNotFoundException.class)
-    public ResponseEntity<Response> handleException(BookTitleNotFoundException ex) {
-        Response response = new Response(ex.getMessage());
+    public ResponseEntity<ResponseBook> handleException(BookTitleNotFoundException ex) {
+        ResponseBook response = new ResponseBook(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(BookIsbnNotFoundException.class)
-    public ResponseEntity<Response> handleException(BookIsbnNotFoundException ex) {
-        Response response = new Response(ex.getMessage());
+    public ResponseEntity<ResponseBook> handleException(BookIsbnNotFoundException ex) {
+        ResponseBook response = new ResponseBook(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
 
     @ExceptionHandler(BookAuthorNotFoundException.class)
-    public ResponseEntity<Response> handleException(BookAuthorNotFoundException                                                                ex) {
-        Response response = new Response(ex.getMessage());
+    public ResponseEntity<ResponseBook> handleException(BookAuthorNotFoundException                                                                ex) {
+        ResponseBook response = new ResponseBook(ex.getMessage());
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 }
