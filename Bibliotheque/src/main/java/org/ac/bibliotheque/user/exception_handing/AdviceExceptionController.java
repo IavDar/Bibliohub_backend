@@ -56,6 +56,9 @@ public class AdviceExceptionController {
     @ExceptionHandler(PasswordIsNotValid.class)
     public ResponseEntity<ApiExceptionInfo> invalidPassword(PasswordIsNotValid ex) {
         return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.UNPROCESSABLE_ENTITY);
+    } @ExceptionHandler(UserAlredyIsBlockUnlock.class)
+    public ResponseEntity<ApiExceptionInfo> invalidPassword(UserAlredyIsBlockUnlock ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage()),HttpStatus.CONFLICT);
     }
 }
 

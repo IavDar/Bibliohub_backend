@@ -1,8 +1,12 @@
 package org.ac.bibliotheque.user.user_service;
 
 import lombok.RequiredArgsConstructor;
+import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.books.repository.BookRepository;
+import org.ac.bibliotheque.cart.entity.Cart;
 import org.ac.bibliotheque.role.Role;
 import org.ac.bibliotheque.role.repository.RoleRepository;
+import org.ac.bibliotheque.user.dto.UserEmailDto;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.*;
 import org.ac.bibliotheque.user.dto.UserRequestDto;
 import org.ac.bibliotheque.user.dto.UserResponseDto;
@@ -14,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -28,29 +33,32 @@ public class UserService implements UserDetailsService {
 
     private final RoleRepository roleRepository;
 
+    private final BookRepository bookRepository;
+
 
     public UserResponseDto registerNewUser(UserRequestDto requestDto) {
         if (requestDto == null) {
             throw new IllegalArgumentException("Запрос не может быть null");
         }
-
         if (!isValidEmail(requestDto.getEmail())) {
             throw new EmailIsNotValid("Некорректный формат email");
         }
-
         if (userRepository.findByEmail(requestDto.getEmail()).isPresent()) {
             throw new EmailIsUsingException("Имеил уже используется");
         }
-
         if (!isValidPassword(requestDto.getPassword())) {
             throw new PasswordIsNotValid("Пароль должен содержать как минимум одну заглавную букву, одну цифру и один специальный символ");
         }
 
         UserData user = new UserData();
-
         user.setEmail(requestDto.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(requestDto.getPassword()));
+        user.setActive(true);
 
+
+        Cart cart = new Cart();
+        cart.setUserData(user);
+        user.setCart(cart);
         String roleTitle = requestDto.getRole();
         if (!roleTitle.equals("ROLE_USER") && !roleTitle.equals("ROLE_LIBRARY")) {
             throw new InvalidRoleException("Недопустимая роль: " + roleTitle);
@@ -61,21 +69,24 @@ public class UserService implements UserDetailsService {
             role.setTitle(roleTitle);
             role = roleRepository.save(role);
         }
-        user.setActive(true);
+
         user.setRoles(Collections.singleton(role));
         user = userRepository.save(user);
 
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(user.getId());
         userResponseDto.setEmail(user.getEmail());
-        userResponseDto.setMessage("Вы умпешно зарегистрировались");
+        userResponseDto.setMessage("Вы успешно зарегистрировались");
         return userResponseDto;
     }
 
 
-    public UserResponseDto deleteUser(UserRequestDto requestDto) {
+    public UserResponseDto deleteUser(UserEmailDto requestDto) {
         if (requestDto == null || requestDto.getEmail() == null || requestDto.getEmail().isEmpty()) {
             throw new IllegalArgumentException("Email не может быть null или пустым");
+        }
+        if (!isValidEmail(requestDto.getEmail())) {
+            throw new EmailIsNotValid("Некорректный формат email");
         }
         UserData userData = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
                 new UserNotFoundException(String.format("Пользователь %s не найден", requestDto.getEmail())));
@@ -95,12 +106,15 @@ public class UserService implements UserDetailsService {
         return userRepository.findAll();
     }
 
-    public UserResponseDto changeRoleOnAdmin(UserRequestDto requestDto) {
+    public UserResponseDto changeRoleOnAdmin(UserEmailDto email) {
 
-        UserData userData = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
-                new UserNotFoundException(String.format("Пользователь %s не найден", requestDto.getEmail())));
+        UserData userData = userRepository.findByEmail(email.getEmail()).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", email.getEmail())));
+        if (!isValidEmail(email.getEmail())) {
+            throw new EmailIsNotValid("Некорректный формат email");
+        }
         if (userData.getRoles().iterator().next().getTitle().equals("ROLE_ADMIN")) {
-            throw new IllegalArgumentException("Этот пользователь уже назначен админом");
+            throw new IllegalArgumentException(String.format("Этот пользователь %s уже назначен админом", email.getEmail()));
         }
 
         String roleTitle = "ROLE_ADMIN";
@@ -118,29 +132,45 @@ public class UserService implements UserDetailsService {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(userData.getId());
         userResponseDto.setEmail(userData.getEmail());
+        userResponseDto.setMessage(String.format("Пользователь %s успешно назначен администратором", email.getEmail()));
         return userResponseDto;
 
     }
 
 
-    public UserResponseDto blockUser(UserRequestDto requestDto) {
-        UserData userData = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
-                new UserNotFoundException(String.format("Пользователь %s не найден", requestDto.getEmail())));
+    public UserResponseDto blockUser(UserEmailDto email) {
+        if (!isValidEmail(email.getEmail())) {
+            throw new EmailIsNotValid("Некорректный формат email");
+        }
+        UserData userData = userRepository.findByEmail(email.getEmail()).orElseThrow(() ->
+                new UserNotFoundException("Пользователь не найден"));
 
+
+        if (!userData.isActive()) {
+            throw new UserAlredyIsBlockUnlock(String.format("Этот пользователь %s уже заблокирован", email.getEmail()));
+        }
         userData.setActive(false);
         userData = userRepository.save(userData);
 
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(userData.getId());
         userResponseDto.setEmail(userData.getEmail());
+        userResponseDto.setMessage(String.format("Пользователь %s успешно заблокирован", email.getEmail()));
 
         return userResponseDto;
     }
 
-    public UserResponseDto unlockUser(UserRequestDto requestDto) {
-        UserData userData = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(() ->
-                new UserNotFoundException(String.format("Пользователь %s не найден", requestDto.getEmail())));
+    public UserResponseDto unlockUser(UserEmailDto email) {
+        if (!isValidEmail(email.getEmail())) {
+            throw new EmailIsNotValid("Некорректный формат email");
+        }
+        UserData userData = userRepository.findByEmail(email.getEmail()).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден", email)));
 
+
+        if (userData.isActive()) {
+            throw new UserAlredyIsBlockUnlock(String.format("Этот пользователь %s не заблокирован", email.getEmail()));
+        }
         userData.setActive(true);
         userData = userRepository.save(userData);
 
@@ -148,13 +178,16 @@ public class UserService implements UserDetailsService {
         UserResponseDto userResponseDto = new UserResponseDto();
         userResponseDto.setId(userData.getId());
         userResponseDto.setEmail(userData.getEmail());
-
+        userResponseDto.setMessage(String.format(String.format("Пользователь %s успешно разблокирован", email.getEmail())));
         return userResponseDto;
     }
 
-    public UserUpdateDto findUsersByEmail(String email) {
+    public UserUpdateDto findUsersByEmail(UserEmailDto email) {
+        if (!isValidEmail(email.getEmail())) {
+            throw new EmailIsNotValid("Некорректный формат email");
+        }
 
-        UserData userData = userRepository.findByEmail(email).orElseThrow(() ->
+        UserData userData = userRepository.findByEmail(email.getEmail()).orElseThrow(() ->
                 new UserNotFoundException(String.format("Пользователь %s не найден", email)));
 
 
@@ -175,9 +208,12 @@ public class UserService implements UserDetailsService {
 
 
     public UserData updateUser(UserUpdateDto updateDto) {
-
+        if (!isValidEmail(updateDto.getEmail())) {
+            throw new EmailIsNotValid("Некорректный формат email");
+        }
         UserData userData = userRepository.findByEmail(updateDto.getEmail()).orElseThrow(() ->
                 new UserNotFoundException(String.format("Пользователь %s не найден", updateDto.getEmail())));
+
         userData.setName(updateDto.getName());
         userData.setSurname(updateDto.getSurname());
         userData.setCity(updateDto.getCity());
@@ -186,14 +222,30 @@ public class UserService implements UserDetailsService {
         userData.setNumber(updateDto.getNumber());
         userData.setZip(updateDto.getZip());
         userData.setPhone(updateDto.getPhone());
-        userData.setId(userData.getId());
 
 
         userData = userRepository.save(userData);
         return userData;
     }
 
+    @Transactional
+    public void addBookToUserCart(Long userId, Long bookId) {
+        UserData userData = userRepository.findById(userId).orElseThrow(() ->
+                new UserNotFoundException(String.format("Пользователь %s не найден PS Экземпшин от Юзера", userId))
+        );
+        if (userData.getCity() == null || userData.getCountry() == null || userData.getName() == null || userData.getUsername() == null
+                || userData.getStreet() == null || userData.getNumber() == null || userData.getZip() == null || userData.getPhone() == null) {
+            throw new UserForbidden("Заполните нужные поля");
+        }
 
+        Book book = bookRepository.findById(bookId).orElseThrow(() ->
+                new UserNotFoundException("Книга не найдена PS Экземпшин от Юзера"));
+        if (book.getAvailable() <= 0) {
+            throw new UserForbidden(String.format("Книги %s нет в наличии PS Экземпшин от Юзера", book.getTitle()));
+        }
+        userData.getCart().addBook(book);
+        userRepository.save(userData);
+    }
 
 
     @Override
@@ -201,13 +253,15 @@ public class UserService implements UserDetailsService {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new UserNotFoundException(String.format("Пользователь %s не найден", email)));
     }
+
     private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        // Регулярное выражение для проверки корректности email
+        String emailRegex = "^(?!.*\\.\\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
         return email.matches(emailRegex);
     }
 
     private boolean isValidPassword(String password) {
-        String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!_*]).{8,}$";
+        String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!_*])(?!.*\\s).{8,32}$";
         return password.matches(passwordRegex);
     }
 }
