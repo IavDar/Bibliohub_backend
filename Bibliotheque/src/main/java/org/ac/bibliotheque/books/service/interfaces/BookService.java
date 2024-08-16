@@ -21,4 +21,7 @@ public interface BookService {
     void deleteBookByTitle(String title);
 
     List<BookDto> getAllBooks();
+    List<BookDto> getAllBooksByLibraryId(Long libraryId);
+
+    void deleteAllBooksByLibraryId(Long libraryId);
 }

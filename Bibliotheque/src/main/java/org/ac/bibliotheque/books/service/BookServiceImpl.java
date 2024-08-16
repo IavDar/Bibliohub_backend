@@ -137,6 +137,20 @@ public class BookServiceImpl implements BookService {
 
     }
 
+    @Override
+    public List<BookDto> getAllBooksByLibraryId(Long libraryId) {
+        return repository.findAllByLibraryId(libraryId).stream()
+                .map(mappingService::mapEntityToDto).toList();
+    }
+
+    @Override
+    public void deleteAllBooksByLibraryId(Long libraryId) {
+        List<BookDto> allBooksByLibraryId = getAllBooksByLibraryId(libraryId);
+        for (BookDto bookDto : allBooksByLibraryId) {
+            deleteBookById(bookDto.getId());
+        }
+    }
+
 //    @Override
 //    public void deleteByIsbn(Long isbn) {
 //        repository.delete(isbn);
