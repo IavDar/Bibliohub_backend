@@ -1,9 +1,11 @@
 package org.ac.bibliotheque.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.ac.bibliotheque.cart.entity.Cart;
 import org.ac.bibliotheque.role.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,6 +48,10 @@ public class UserData implements UserDetails {
     private String phone;
     @Column(name = "active")
     private boolean active;
+
+    @OneToOne(mappedBy = "userData",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Cart cart;
 
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)

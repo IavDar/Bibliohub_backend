@@ -2,6 +2,7 @@ package org.ac.bibliotheque.user.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import org.ac.bibliotheque.user.dto.UserEmailDto;
 import org.ac.bibliotheque.user.exception_handing.ApiExceptionInfo;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.UserNotFoundException;
 import org.ac.bibliotheque.user.dto.UserRequestDto;
@@ -30,8 +31,8 @@ public class UserController {
         return ResponseEntity.ok(responseDto);
     }
 
-    @DeleteMapping("/delete")
-    public ResponseEntity<UserResponseDto> deleteUser(@RequestBody UserRequestDto requestDto) {
+    @DeleteMapping
+    public ResponseEntity<UserResponseDto> deleteUser(@RequestBody UserEmailDto requestDto) {
         UserResponseDto responseDto = userService.deleteUser(requestDto);
         return ResponseEntity.ok(responseDto);
     }
@@ -42,37 +43,46 @@ public class UserController {
     }
 
 
-    @PutMapping("/appointasadmin")
-    public ResponseEntity<UserResponseDto> setAdmin(@RequestBody UserRequestDto requestDto) {
+    @PutMapping("/appoint-as-admin")
+    public ResponseEntity<UserResponseDto> setAdmin(@RequestBody UserEmailDto requestDto) {
         UserResponseDto responseDto = userService.changeRoleOnAdmin(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
     @PutMapping("/block")
-    public ResponseEntity<UserResponseDto> blockUser(@RequestBody UserRequestDto requestDto) {
-        UserResponseDto responseDto = userService.blockUser(requestDto);
+    public ResponseEntity<UserResponseDto> blockUser(@RequestBody UserEmailDto email) {
+        UserResponseDto responseDto = userService.blockUser(email);
+        return ResponseEntity.ok(responseDto);
+    }
+
+    @PutMapping("/unblock")
+    public ResponseEntity<UserResponseDto> unlock(@RequestBody UserEmailDto email) {
+        UserResponseDto responseDto = userService.unlockUser(email);
         return ResponseEntity.ok(responseDto);
 
     }
 
-    @PutMapping("/unlock")
-    public ResponseEntity<UserResponseDto> unlock(@RequestBody UserRequestDto requestDto) {
-        UserResponseDto responseDto = userService.unlockUser(requestDto);
-        return ResponseEntity.ok(responseDto);
-
-    }
-
-    @GetMapping("/useremail")
-    public ResponseEntity<UserUpdateDto> findUserByEmail(@RequestBody UserRequestDto requestDto) {
-        UserUpdateDto userResponseDto = userService.findUsersByEmail(requestDto.getEmail());
+    @GetMapping("/{email}")
+    public ResponseEntity<UserUpdateDto> findUserByEmail(@PathVariable(name = "email") UserEmailDto email) {
+        UserUpdateDto userResponseDto = userService.findUsersByEmail(email);
         return ResponseEntity.ok(userResponseDto);
     }
 
 
-    @PutMapping("/update")
+    @PutMapping
     public ResponseEntity<UserData> updateUser(@RequestBody UserUpdateDto updateDto) {
        UserData userData = userService.updateUser(updateDto);
         return ResponseEntity.ok(userData);
     }
+
+    @PutMapping("/{userId}/books/{bookId}")
+    public void addBookToCart(@PathVariable Long userId,
+                              @PathVariable Long bookId){
+       userService.addBookToUserCart(userId,bookId);
+
+
+    }
+
+
 
 }
