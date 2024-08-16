@@ -4,8 +4,10 @@ import org.ac.bibliotheque.library.domain.dto.LibraryDto;
 import org.ac.bibliotheque.library.service.interfaces.LibraryService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/bibliotek")
+@RequestMapping("/libraries")
 public class LibraryController {
 
     private LibraryService service;
@@ -20,16 +22,31 @@ public class LibraryController {
         return service.save(library);
     }
 
+    @GetMapping("/{id}")
+    public LibraryDto getById(@PathVariable(name = "id") Long id) {
+        return service.getLibraryById(id);
+    }
+
+    @GetMapping("/all")
+    public List<LibraryDto> getAll() {
+        return service.getAllLibraries();
+    }
+
+    @GetMapping
+    public List<LibraryDto> getByLibrarianId(@RequestParam Long librarianId) {
+        return service.getLibrariesByLibrarianId(librarianId);
+    }
+
     @PutMapping
     public LibraryDto update(@RequestBody LibraryDto library) {
 
         return service.update(library);
     }
 
-    @DeleteMapping
-    public void delete(@RequestParam Long id) {
-
-            service.deleteById(id);
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable(name = "id") Long id) {
+        service.deleteById(id);
 
     }
+
 }

@@ -3,15 +3,16 @@ package org.ac.bibliotheque.security.sec_service;
 import io.jsonwebtoken.Claims;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
+import org.ac.bibliotheque.security.Exceptions.InvalidPassword;
 import org.ac.bibliotheque.security.auth_dto.LoginRequestDto;
 import org.ac.bibliotheque.security.auth_dto.LoginResponseDto;
 import org.ac.bibliotheque.security.sec_dto.TokenResponseDto;
 import org.ac.bibliotheque.user.entity.UserData;
+import org.ac.bibliotheque.user.exception_handing.Exceptions.EmailIsNotValid;
+import org.ac.bibliotheque.user.exception_handing.Exceptions.UserForbidden;
 import org.ac.bibliotheque.user.user_service.UserService;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,18 +29,34 @@ public class AuthService {
 
     public LoginResponseDto login(LoginRequestDto requestDto) throws AuthException {
         String email = requestDto.getEmail();
+        if (!isValidEmail(email)){
+            throw new EmailIsNotValid(String.format("Вам имеил %s не корректно введен", email));
+        }
         UserData foundUser = (UserData) userService.loadUserByUsername(email);
+
         if (!foundUser.isActive()){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Вы заблокированы");
+            throw new UserForbidden("Вы заблокированы");
         } else if (bCryptPasswordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
 
             String accessToken = tokenService.generateAccessToken(foundUser);
             String refreshToken = tokenService.generateRefreshToken(foundUser);
 
             refreshStorage.put(email, refreshToken);
-            return new LoginResponseDto(foundUser.getId(),accessToken, refreshToken,"Успешно",foundUser.getRoles());
+            return new LoginResponseDto(foundUser.getId(),
+                    foundUser.getEmail(),
+                    foundUser.getName(),
+                    foundUser.getSurname(),
+                    foundUser.getCountry(),
+                    foundUser.getCity(),
+                    foundUser.getStreet(),
+                    foundUser.getNumber(),
+                    foundUser.getZip(),
+                    foundUser.getPhone(),
+                    foundUser.getRoles(),
+                    accessToken,refreshToken,
+                    "Вы успеешно аторизовались");
         } else {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"Не коректный логин или пароль");
+            throw new InvalidPassword("Вы ввели неверный пароль");
 
         }
 
@@ -65,7 +82,10 @@ public class AuthService {
     }
 
 
-
+    private boolean isValidEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        return email.matches(emailRegex);
+    }
 
 
 

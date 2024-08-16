@@ -1,17 +1,14 @@
-package org.ac.bibliotheque.security.auth_dto;
+package org.ac.bibliotheque.user.dto;
 
-import jakarta.persistence.Column;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.ac.bibliotheque.role.Role;
-
-import java.util.Set;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class LoginResponseDto {
+@NoArgsConstructor
+public class UserUpdateDto {
     private Long id;
     private String email;
     private String name;
@@ -22,10 +19,7 @@ public class LoginResponseDto {
     private String number;
     private String zip;
     private String phone;
-    private Set<Role> role;
-    private String accessToken;
-    private String refreshToken;
-    private String message;
+    private boolean active;
+
 
 }
-
