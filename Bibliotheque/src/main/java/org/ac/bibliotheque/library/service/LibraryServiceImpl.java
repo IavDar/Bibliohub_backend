@@ -10,6 +10,8 @@ import org.ac.bibliotheque.library.service.mapping.LibraryMappingService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 public class LibraryServiceImpl implements LibraryService {
 
@@ -32,6 +34,33 @@ public class LibraryServiceImpl implements LibraryService {
 
         return mappingService.mapEntityToDto(entity);
     }
+
+    @Override
+    public List<LibraryDto> getAllLibraries() {
+        return  repository.findAll()
+                .stream()
+                .map(mappingService::mapEntityToDto)
+                .toList();
+    }
+
+    @Override
+    public LibraryDto getLibraryById(Long id) {
+        Library library = repository.findById(id).orElse(null);
+        if (library == null) {
+            return null;
+        }
+        return mappingService.mapEntityToDto(library);
+    }
+
+    @Override
+    public List<LibraryDto> getLibrariesByLibrarianId(Long librarianId) {
+        return repository.findAll()
+                .stream()
+                .filter(x -> x.getLibrarian_id().equals(librarianId))
+                .map(mappingService::mapEntityToDto)
+                .toList();
+    }
+
 
     @Override
     @Transactional
