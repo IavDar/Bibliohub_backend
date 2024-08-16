@@ -4,13 +4,9 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="0" author="Vladn09">
-
+    <changeSet id="add-tag-0.2.1" author="sergej">
+        <tagDatabase tag="v.books.0.2.1"/>
     </changeSet>
-    
-    <include file="v.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.library.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.books.0.2.0/changelog.xml" relativeToChangelogFile="true"/>
-    <include file="v.books.0.2.1/changelog.xml" relativeToChangelogFile="true"/>
+    <include file="add-foreign-key-books-library.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

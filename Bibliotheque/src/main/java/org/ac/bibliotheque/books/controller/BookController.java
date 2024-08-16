@@ -47,8 +47,8 @@ public class BookController {
         return service.update(book);
     }
 
-    @DeleteMapping("/id={id}")
-    public BookDto delete(String id) {
+    @DeleteMapping("/{id}")
+    public BookDto delete(@PathVariable String id) {
         if (id != null) {
             BookDto book = service.getBookById(Long.parseLong(id));
             service.deleteBookById(Long.parseLong(id));
