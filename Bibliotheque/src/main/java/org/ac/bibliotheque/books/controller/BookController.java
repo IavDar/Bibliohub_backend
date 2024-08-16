@@ -84,20 +84,20 @@ public class BookController {
     }
 
 
-    @GetMapping("?search/title={title}")
+    @GetMapping("/search?title={title}")
     public BookDto getBooksByTitle(@RequestParam String title){
         return service.getBookByTitle(title);
     }
 
-    @GetMapping("?search/isbn={isbn}")
+    @GetMapping("/search?isbn={isbn}")
     public BookDto getBooksByIsbn(@RequestParam String isbn){
         return service.getBookByIsbn(isbn);
     }
 
 
-    @GetMapping("?search/author={author}")
-    public BookDto getBooksByAuthor(@RequestParam String author){
-        return service.getBookByAuthor(author);
+    @GetMapping("/search?author={author}")
+    public BookDto getBooksByAuthorSurname(@RequestParam String author){
+        return service.getBookByAuthorSurname(author);
     }
 
     @ExceptionHandler(BookTitleNotFoundException.class)

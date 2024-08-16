@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static java.util.Locale.filter;
-
 public class BookServiceImpl implements BookService {
 
 
@@ -90,28 +88,30 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto getBookByAuthor(String author) {
+    public BookDto getBookByAuthorSurname(String author) {
         String[] arguments = author.split(" ");
         // splitt into two parts
         if (arguments[1] == null) {
-            return getBookByAuthorSurname(author);
+            Book book = repository.findByAuthorName(author);
+            return mappingService.mapEntityToDto(book);
         } else {
             Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
             return mappingService.mapEntityToDto(book);
         }
     }
 
-    @Override
-    public BookDto getBookByAuthorName(String authorName) {
-        Book book = repository.findByAuthorName(authorName);
-        return mappingService.mapEntityToDto(book);
-    }
 
-    @Override
-    public BookDto getBookByAuthorSurname(String authorSurname) {
-        Book book = repository.findByAuthorName(authorSurname);
-        return mappingService.mapEntityToDto(book);
-    }
+//    @Override
+//    public BookDto getBookByAuthorName(String authorName) {
+//        Book book = repository.findByAuthorName(authorName);
+//        return mappingService.mapEntityToDto(book);
+//    }
+//
+//    @Override
+//    public BookDto getBookByAuthorSurname(String authorSurname) {
+//        Book book = repository.findByAuthorName(authorSurname);
+//        return mappingService.mapEntityToDto(book);
+//    }
 
     @Override
     public void deleteBookById(Long id) {
