@@ -111,7 +111,7 @@ public class BookDto {
 
     @Override
     public String toString() {
-        return String.format("Book DTO: id - %d, Book Name - %s, Author: - %s %s",
+        return String.format("Book DTO: Book ID - %d Book Name - %s, Author: - %s %s",
                 id, title, authorName, authorName );
     }
 }

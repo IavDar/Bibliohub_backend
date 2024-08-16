@@ -30,40 +30,39 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookDto update(BookDto dto){
+    public BookDto update(BookDto dto) {
         Book book = mappingService.mapDtoToEntity(dto);
 
-        if (book == null){
+        if (book == null) {
             return null;
         }
         if (dto.getTitle() != null) {
             book.setTitle(dto.getTitle());
         }
-        if (dto.getIsbn() != null){
+        if (dto.getIsbn() != null) {
             book.setIsbn(dto.getIsbn());
         }
-        if (dto.getAuthorName()!= null){
+        if (dto.getAuthorName() != null) {
             book.setAuthorName(dto.getAuthorName());
         }
-        if (dto.getAuthorSurname()!= null){
+        if (dto.getAuthorSurname() != null) {
             book.setAuthorSurname(dto.getAuthorSurname());
         }
-        if (dto.getYear()!= null){
+        if (dto.getYear() != null) {
             book.setYear(dto.getYear());
         }
-        if (dto.getPublisher()!= null){
+        if (dto.getPublisher() != null) {
             book.setPublisher(dto.getPublisher());
         }
-        if (dto.getQuantity()!= null){
+        if (dto.getQuantity() != null) {
             book.setQuantity(dto.getQuantity());
         }
-        if (dto.getAvailable()!= null){
+        if (dto.getAvailable() != null) {
             book.setAvailable(dto.getAvailable());
         }
-        if (dto.getLibraryId()!= null){
+        if (dto.getLibraryId() != null) {
             book.setLibraryId(dto.getLibraryId());
         }
-
 
 
         return mappingService.mapEntityToDto(book);
@@ -89,11 +88,11 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto getBookByAuthorName(String authorName) {
-        String[] arguments = authorName.split(" ");
+    public BookDto getBookByAuthorSurname(String author) {
+        String[] arguments = author.split(" ");
         // splitt into two parts
         if (arguments[1] == null) {
-            Book book = repository.findByAuthorName(authorName);
+            Book book = repository.findByAuthorName(author);
             return mappingService.mapEntityToDto(book);
         } else {
             Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
@@ -101,11 +100,18 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-    @Override
-    public BookDto getBookByAuthorSurname(String authorSurname) {
-        Book book = repository.findByAuthorName(authorSurname);
-        return mappingService.mapEntityToDto(book);
-    }
+
+//    @Override
+//    public BookDto getBookByAuthorName(String authorName) {
+//        Book book = repository.findByAuthorName(authorName);
+//        return mappingService.mapEntityToDto(book);
+//    }
+//
+//    @Override
+//    public BookDto getBookByAuthorSurname(String authorSurname) {
+//        Book book = repository.findByAuthorName(authorSurname);
+//        return mappingService.mapEntityToDto(book);
+//    }
 
     @Override
     public void deleteBookById(Long id) {
@@ -124,9 +130,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> getAllBooks() {
-        List.of(repository.findAll());
-        // TODO change List of Book into List Dto
-        return null;
+
+        return repository.findAll().stream()
+                .filter(x -> x.getAvailable() > 0)
+                .map(mappingService::mapEntityToDto).toList();
+
     }
 
 //    @Override

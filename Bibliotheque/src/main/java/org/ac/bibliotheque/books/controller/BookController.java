@@ -1,7 +1,12 @@
 package org.ac.bibliotheque.books.controller;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
+import org.ac.bibliotheque.books.exception_handling.Response;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookAuthorNotFoundException;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookIsbnNotFoundException;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +24,7 @@ public class BookController {
     //  CRUD Create Read Update Delete // Post Get Put Delete
     //  localhost:8080
 
-    @PostMapping("/books")
+    @PostMapping
     public BookDto addBook(@RequestBody BookDto book) {
         return service.addBook(book);
     }
@@ -37,28 +42,83 @@ public class BookController {
     }
 */
 
-    @PutMapping("/books")
+    @PutMapping
     public BookDto update(@RequestBody BookDto book) {
         return service.update(book);
     }
 
-    @DeleteMapping("/books")
-    public void delete(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String isbn) {
-        if (isbn != null){
-            service.deleteBookByIsbn(isbn);
-        } else if (title != null) {
-            service.deleteBookByTitle(title);
+    @DeleteMapping("/{id}")
+    public BookDto delete(@PathVariable String id) {
+        if (id != null) {
+            BookDto book = service.getBookById(Long.parseLong(id));
+            service.deleteBookById(Long.parseLong(id));
+            return book;
         }
+        return null;
     }
 
-    @GetMapping
+//    @DeleteMapping("/isbn={isbn}")
+//    public BookDto delete(String isbn) {
+//        if (isbn != null) {
+//            BookDto book = service.getBookByIsbn(isbn));
+//            service.deleteBookByIsbn(isbn);
+//            return book;
+//        }
+//        return null;
+//    }
+
+//    @DeleteMapping("/title={title}")
+//    public BookDto delete(String title) {
+//        if (title != null || title.trim() != "") {
+//            BookDto book = service.getBookByTitle(title);
+//            service.deleteBookByTitle(title);
+//            return book;
+//        }
+//        return null;
+//    }
+
+    @GetMapping("/all")
     public List<BookDto> getAllBooks() {
-        // как соединить этот метод со следующим? TODO
+
         return service.getAllBooks();
     }
 
+
+    @GetMapping("/search?title={title}")
+    public BookDto getBooksByTitle(@RequestParam String title){
+        return service.getBookByTitle(title);
+    }
+
+    @GetMapping("/search?isbn={isbn}")
+    public BookDto getBooksByIsbn(@RequestParam String isbn){
+        return service.getBookByIsbn(isbn);
+    }
+
+
+    @GetMapping("/search?author={author}")
+    public BookDto getBooksByAuthorSurname(@RequestParam String author){
+        return service.getBookByAuthorSurname(author);
+    }
+
+    @ExceptionHandler(BookTitleNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(BookTitleNotFoundException e) {
+        return new Response(e.getMessage());
+    }
+
+    @ExceptionHandler(BookIsbnNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(BookIsbnNotFoundException e) {
+        return new Response(e.getMessage());
+    }
+
+    @ExceptionHandler(BookAuthorNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public Response handleException(BookAuthorNotFoundException e) {
+        return new Response(e.getMessage());
+    }
+
+    /*
     @GetMapping("/books")
     public BookDto getBooksByParameter(@RequestParam String param) {
 
@@ -75,8 +135,7 @@ public class BookController {
             return null;
             // TODO Exception: no book has been found
         }
-
-
     }
+*/
 
 }
