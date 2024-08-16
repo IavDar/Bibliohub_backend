@@ -5,7 +5,7 @@ import java.util.Objects;
 public class BookDto {
 
 
-//    private Long id;
+    private Long id;
     private String title;
     private String authorName;
     private String authorSurname;
@@ -64,13 +64,13 @@ public class BookDto {
         this.available = available;
     }
 
-//    public Long getId() {
-//        return id;
-//    }
-//
-//    public void setId(Long id) {
-//        this.id = id;
-//    }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;
@@ -101,17 +101,17 @@ public class BookDto {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BookDto bookDto = (BookDto) o;
-        return Objects.equals(title, bookDto.title) && Objects.equals(authorName, bookDto.authorName) && Objects.equals(authorSurname, bookDto.authorSurname) && Objects.equals(year, bookDto.year) && Objects.equals(isbn, bookDto.isbn) && Objects.equals(publisher, bookDto.publisher) && Objects.equals(libraryId, bookDto.libraryId) && Objects.equals(quantity, bookDto.quantity) && Objects.equals(available, bookDto.available);
+        return Objects.equals(id, bookDto.id) && Objects.equals(title, bookDto.title) && Objects.equals(authorName, bookDto.authorName) && Objects.equals(authorSurname, bookDto.authorSurname) && Objects.equals(year, bookDto.year) && Objects.equals(isbn, bookDto.isbn) && Objects.equals(publisher, bookDto.publisher) && Objects.equals(libraryId, bookDto.libraryId) && Objects.equals(quantity, bookDto.quantity) && Objects.equals(available, bookDto.available);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, authorName, authorSurname, year, isbn, publisher, libraryId, quantity, available);
+        return Objects.hash(id, title, authorName, authorSurname, year, isbn, publisher, libraryId, quantity, available);
     }
 
     @Override
     public String toString() {
-        return String.format("Book DTO: Book Name - %s, Author: - %s %s",
-                title, authorName, authorName );
+        return String.format("Book DTO: Book ID - %d Book Name - %s, Author: - %s %s",
+                id, title, authorName, authorName );
     }
 }

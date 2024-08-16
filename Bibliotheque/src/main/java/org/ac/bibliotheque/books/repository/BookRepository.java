@@ -9,7 +9,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Book findByTitle(String title);
     Book findByIsbn(String isbn);
-    Book findByAuthor(String author);
     Book findByAuthorName(String author);
     Book findByAuthorSurname(String author);
     Book findByAuthorNameAndAuthorSurname(String authorName, String authorSurname);
@@ -18,8 +17,8 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     List<Book> findAllByYear(String year);
 
 
+    void deleteById(Long id);
     void deleteByIsbn(String isbn);
     void deleteByTitle(String title);
-
 
 }

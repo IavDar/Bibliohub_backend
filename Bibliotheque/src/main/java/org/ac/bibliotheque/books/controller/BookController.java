@@ -24,7 +24,7 @@ public class BookController {
     //  CRUD Create Read Update Delete // Post Get Put Delete
     //  localhost:8080
 
-    @PostMapping("/books")
+    @PostMapping
     public BookDto addBook(@RequestBody BookDto book) {
         return service.addBook(book);
     }
@@ -42,43 +42,62 @@ public class BookController {
     }
 */
 
-    @PutMapping("/books")
+    @PutMapping
     public BookDto update(@RequestBody BookDto book) {
         return service.update(book);
     }
 
-    @DeleteMapping("/books")
-    public void delete(
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String isbn) {
-        if (isbn != null){
-            service.deleteBookByIsbn(isbn);
-        } else if (title != null) {
-            service.deleteBookByTitle(title);
+    @DeleteMapping("/{id}")
+    public BookDto delete(@PathVariable String id) {
+        if (id != null) {
+            BookDto book = service.getBookById(Long.parseLong(id));
+            service.deleteBookById(Long.parseLong(id));
+            return book;
         }
+        return null;
     }
 
-    @GetMapping
+//    @DeleteMapping("/isbn={isbn}")
+//    public BookDto delete(String isbn) {
+//        if (isbn != null) {
+//            BookDto book = service.getBookByIsbn(isbn));
+//            service.deleteBookByIsbn(isbn);
+//            return book;
+//        }
+//        return null;
+//    }
+
+//    @DeleteMapping("/title={title}")
+//    public BookDto delete(String title) {
+//        if (title != null || title.trim() != "") {
+//            BookDto book = service.getBookByTitle(title);
+//            service.deleteBookByTitle(title);
+//            return book;
+//        }
+//        return null;
+//    }
+
+    @GetMapping("/all")
     public List<BookDto> getAllBooks() {
-        // как соединить этот метод со следующим? TODO
+
         return service.getAllBooks();
     }
 
 
-    @GetMapping("/books/title")
+    @GetMapping("/search?title={title}")
     public BookDto getBooksByTitle(@RequestParam String title){
         return service.getBookByTitle(title);
     }
 
-    @GetMapping("/books/isbn")
+    @GetMapping("/search?isbn={isbn}")
     public BookDto getBooksByIsbn(@RequestParam String isbn){
         return service.getBookByIsbn(isbn);
     }
 
 
-    @GetMapping("/books/author")
-    public BookDto getBooksByAuthor(@RequestParam String author){
-        return service.getBookByAuthor(author);
+    @GetMapping("/search?author={author}")
+    public BookDto getBooksByAuthorSurname(@RequestParam String author){
+        return service.getBookByAuthorSurname(author);
     }
 
     @ExceptionHandler(BookTitleNotFoundException.class)
