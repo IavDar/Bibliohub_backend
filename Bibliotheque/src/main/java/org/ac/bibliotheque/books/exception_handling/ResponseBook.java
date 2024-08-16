@@ -2,11 +2,11 @@ package org.ac.bibliotheque.books.exception_handling;
 
 import java.util.Objects;
 
-public class Response {
+public class ResponseBook {
 
     private String message;
 
-    public Response(String message) {
+    public ResponseBook(String message) {
         this.message = message;
     }
 
@@ -18,7 +18,7 @@ public class Response {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Response response = (Response) o;
+        ResponseBook response = (ResponseBook) o;
         return Objects.equals(message, response.message);
     }
 
