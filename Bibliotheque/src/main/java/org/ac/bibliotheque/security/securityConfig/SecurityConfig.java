@@ -37,7 +37,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/users/delete").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/appointasadmin").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/block").permitAll()
