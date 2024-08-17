@@ -22,6 +22,7 @@ public class UserRequestDto {
 
 
     private String password;
+    @Schema(description = "ROLE_", example = "ROLE_ADMIN,ROLE_USER,ROLE_LIBRARY")
     private String role;
 
 

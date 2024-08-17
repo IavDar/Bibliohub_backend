@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ApiExceptionInfo {
     private String message;
+    private String errorCode ;
 }

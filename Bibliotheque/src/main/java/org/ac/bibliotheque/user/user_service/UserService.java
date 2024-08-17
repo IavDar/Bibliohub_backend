@@ -2,6 +2,8 @@ package org.ac.bibliotheque.user.user_service;
 
 import lombok.RequiredArgsConstructor;
 import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookIdNotFoundException;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
 import org.ac.bibliotheque.cart.entity.Cart;
 import org.ac.bibliotheque.role.Role;
@@ -110,11 +112,15 @@ public class UserService implements UserDetailsService {
 
         UserData userData = userRepository.findByEmail(email.getEmail()).orElseThrow(() ->
                 new UserNotFoundException(String.format("Пользователь %s не найден", email.getEmail())));
+        if (email.getEmail() == null || email.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email не может быть null или пустым");
+        }
+
         if (!isValidEmail(email.getEmail())) {
             throw new EmailIsNotValid("Некорректный формат email");
         }
         if (userData.getRoles().iterator().next().getTitle().equals("ROLE_ADMIN")) {
-            throw new IllegalArgumentException(String.format("Этот пользователь %s уже назначен админом", email.getEmail()));
+            throw new AlreadyAdmin(String.format("Этот пользователь %s уже назначен админом", email.getEmail()));
         }
 
         String roleTitle = "ROLE_ADMIN";
@@ -142,8 +148,12 @@ public class UserService implements UserDetailsService {
         if (!isValidEmail(email.getEmail())) {
             throw new EmailIsNotValid("Некорректный формат email");
         }
+
         UserData userData = userRepository.findByEmail(email.getEmail()).orElseThrow(() ->
                 new UserNotFoundException("Пользователь не найден"));
+        if (email.getEmail() == null || email.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email не может быть null или пустым");
+        }
 
 
         if (!userData.isActive()) {
@@ -167,6 +177,9 @@ public class UserService implements UserDetailsService {
         UserData userData = userRepository.findByEmail(email.getEmail()).orElseThrow(() ->
                 new UserNotFoundException(String.format("Пользователь %s не найден", email)));
 
+        if (email.getEmail() == null || email.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email не может быть null или пустым");
+        }
 
         if (userData.isActive()) {
             throw new UserAlredyIsBlockUnlock(String.format("Этот пользователь %s не заблокирован", email.getEmail()));
@@ -190,6 +203,9 @@ public class UserService implements UserDetailsService {
         UserData userData = userRepository.findByEmail(email.getEmail()).orElseThrow(() ->
                 new UserNotFoundException(String.format("Пользователь %s не найден", email)));
 
+        if (email.getEmail() == null || email.getEmail().isEmpty()) {
+            throw new IllegalArgumentException("Email не может быть null или пустым");
+        }
 
         UserUpdateDto userInfo = new UserUpdateDto();
         userInfo.setId(userData.getId());
@@ -231,7 +247,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void addBookToUserCart(Long userId, Long bookId) {
         UserData userData = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException(String.format("Пользователь %s не найден PS Экземпшин от Юзера", userId))
+                new UserNotFoundException(String.format("Пользователь %s не найден", userId))
         );
         if (userData.getCity() == null || userData.getCountry() == null || userData.getName() == null || userData.getUsername() == null
                 || userData.getStreet() == null || userData.getNumber() == null || userData.getZip() == null || userData.getPhone() == null) {
@@ -239,9 +255,9 @@ public class UserService implements UserDetailsService {
         }
 
         Book book = bookRepository.findById(bookId).orElseThrow(() ->
-                new UserNotFoundException("Книга не найдена PS Экземпшин от Юзера"));
+                new BookTitleNotFoundException("Книга не найдена"));
         if (book.getAvailable() <= 0) {
-            throw new UserForbidden(String.format("Книги %s нет в наличии PS Экземпшин от Юзера", book.getTitle()));
+            throw new BookIsEmpty(String.format("Книги %s нет в наличии PS Экземпшин от Юзера", book.getTitle()));
         }
         userData.getCart().addBook(book);
         userRepository.save(userData);
