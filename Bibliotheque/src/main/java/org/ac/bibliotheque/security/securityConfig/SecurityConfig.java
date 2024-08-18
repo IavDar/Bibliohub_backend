@@ -21,7 +21,8 @@ import org.springframework.web.filter.CorsFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-    private  TokenFilter tokenFilter;
+    private final TokenFilter tokenFilter;
+
     public SecurityConfig(TokenFilter filter) {
         this.tokenFilter = filter;
     }
@@ -39,19 +40,23 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/refresh").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/users/appointasadmin").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/users/appoint-as-admin").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/block").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/{email}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/users/{userId}/books/{bookId}").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/users/unlock").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/cart/{userId}/books/{bookId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/cart/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/cart/{userId}/book/{bookId}").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/wishlist/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/wishlist/{userId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/libraries/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/libraries/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/libraries/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/libraries").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/libraries").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/libraries/{id}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/users/update").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/books").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)

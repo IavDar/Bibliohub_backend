@@ -72,6 +72,12 @@ public class AdviceExceptionController {
         return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage(),HttpStatus.GONE.toString()),HttpStatus.GONE);
     }
 
+//    TODO Изменить статус
+    @ExceptionHandler(CartIsEmpty.class)
+    public ResponseEntity<ApiExceptionInfo> cartIsEmpty(CartIsEmpty ex) {
+        return new ResponseEntity<>(new ApiExceptionInfo(ex.getMessage(),HttpStatus.GONE.toString()),HttpStatus.GONE);
+    }
+
 
 }
 

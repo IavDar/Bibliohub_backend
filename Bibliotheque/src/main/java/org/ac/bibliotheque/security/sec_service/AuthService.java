@@ -9,6 +9,7 @@ import org.ac.bibliotheque.security.auth_dto.LoginResponseDto;
 import org.ac.bibliotheque.security.sec_dto.TokenResponseDto;
 import org.ac.bibliotheque.user.entity.UserData;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.EmailIsNotValid;
+import org.ac.bibliotheque.user.exception_handing.Exceptions.PasswordIsNotValid;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.UserForbidden;
 import org.ac.bibliotheque.user.user_service.UserService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,6 +30,9 @@ public class AuthService {
 
     public LoginResponseDto login(LoginRequestDto requestDto) throws AuthException {
         String email = requestDto.getEmail();
+        if (email==null||email.isEmpty()){
+            throw new IllegalArgumentException("Имеил не может быть пустым");
+        }
         if (!isValidEmail(email)){
             throw new EmailIsNotValid(String.format("Вам имеил %s не корректно введен", email));
         }
@@ -36,6 +40,8 @@ public class AuthService {
 
         if (!foundUser.isActive()){
             throw new UserForbidden("Вы заблокированы");
+        }else if (isValidPassword(requestDto.getPassword())){
+            throw new PasswordIsNotValid("Пароль должен содержать 8 симоволов,1 спец знак , заглавную букву и 1 цифру");
         } else if (bCryptPasswordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
 
             String accessToken = tokenService.generateAccessToken(foundUser);
@@ -87,7 +93,10 @@ public class AuthService {
         return email.matches(emailRegex);
     }
 
-
+    private boolean isValidPassword(String password) {
+        String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!_*])(?!.*\\s).{8,32}$";
+        return password.matches(passwordRegex);
+    }
 
 
 

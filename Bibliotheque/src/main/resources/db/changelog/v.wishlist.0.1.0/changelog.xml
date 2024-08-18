@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="18082024" author="Vladn09">
+
+    </changeSet>
+
+    <include file="db/changelog/v.wishlist.0.1.0/create-table-wishlist.xml"/>
+    <include file="db/changelog/v.wishlist.0.1.0/create-forgein-key-user-wishlist.xml"/>
+    <include file="db/changelog/v.wishlist.0.1.0/create-table-wishlist-to-books.xml"/>
+    <include file="db/changelog/v.wishlist.0.1.0/create-forgein-key-wishlist-book.xml"/>
+</databaseChangeLog>
