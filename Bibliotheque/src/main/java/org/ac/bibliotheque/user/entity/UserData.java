@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ac.bibliotheque.cart.entity.Cart;
 import org.ac.bibliotheque.role.Role;
-import org.ac.bibliotheque.reservedBooks.entity.Wishlist;
+import org.ac.bibliotheque.reservedBooks.entity.ReservedList;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -63,7 +63,7 @@ public class UserData implements UserDetails {
 
     @OneToOne(mappedBy = "userData",cascade = CascadeType.ALL)
     @JsonManagedReference
-    private  Wishlist wishlist;
+    private ReservedList reservedList;
 
 
     @Override

@@ -4,13 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="create-forgein-key-user-reserved" author="vladn09">
-
-        <addForeignKeyConstraint baseTableName="reserved"
-                                 baseColumnNames="user_id"
-                                 constraintName="fk-reserved-to-user"
-                                 referencedTableName="users"
-                                 referencedColumnNames="id"/>
-
+    <changeSet id="rename-wishlist-to-reserved" author="admin">
+        <renameTable oldTableName="wishlist" newTableName="reserved"/>
     </changeSet>
 </databaseChangeLog>

@@ -12,9 +12,9 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Entity
-@Table(name = "wishlist")
+@Table(name = "reserved")
 @Data
-public class Wishlist {
+public class ReservedList {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +28,8 @@ public class Wishlist {
 
     @ManyToMany
     @JoinTable(
-            name = "wishlist_books",
-            joinColumns = @JoinColumn(name = "wishlist_id"),
+            name = "reserved_books",
+            joinColumns = @JoinColumn(name = "reserved_id"),
             inverseJoinColumns = @JoinColumn(name = "book_id"))
     private List<Book> books;
 

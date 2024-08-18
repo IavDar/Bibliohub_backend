@@ -4,17 +4,17 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="create-forgein-key-wishlist-book" author="admin">
-        <addForeignKeyConstraint baseTableName="wishlist_books"
-                                 baseColumnNames="wishlist_id"
-                                 constraintName="fk_wihslist_wishlist_to_books"
-                                 referencedTableName="wishlist"
+    <changeSet id="create-forgein-key-reserved-book" author="admin">
+        <addForeignKeyConstraint baseTableName="reserved_books"
+                                 baseColumnNames="reserved_id"
+                                 constraintName="fk_reserved_reserved_to_books"
+                                 referencedTableName="reserved"
                                  referencedColumnNames="id"/>
 
 
-        <addForeignKeyConstraint baseTableName="wishlist_books"
+        <addForeignKeyConstraint baseTableName="reserved_books"
                                  baseColumnNames="book_id"
-                                 constraintName="fk_wihslist_book_to_books"
+                                 constraintName="fk_reserved_book_to_books"
                                  referencedTableName="books"
                                  referencedColumnNames="id"/>
 
