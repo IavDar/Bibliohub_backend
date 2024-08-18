@@ -9,8 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.ac.bibliotheque.user.dto.UserEmailDto;
 import org.ac.bibliotheque.user.exception_handing.ApiExceptionInfo;
-import org.ac.bibliotheque.user.exception_handing.Exceptions.EmailIsNotValid;
-import org.ac.bibliotheque.user.exception_handing.Exceptions.EmailIsUsingException;
 import org.ac.bibliotheque.user.dto.UserRequestDto;
 import org.ac.bibliotheque.user.dto.UserResponseDto;
 import org.ac.bibliotheque.user.dto.UserUpdateDto;
@@ -59,7 +57,7 @@ public class UserController {
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
             @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
     public UserResponseDto deleteUser(@RequestBody UserEmailDto requestDto) {
         return userService.deleteUser(requestDto);
@@ -119,7 +117,7 @@ public class UserController {
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
             @ApiResponse(responseCode = "409", description = "Пользователь не заблокирован", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
-    @PutMapping("/unblock")
+    @PutMapping("/unlock")
     public ResponseEntity<UserResponseDto> unlock(@RequestBody UserEmailDto email) {
         UserResponseDto responseDto = userService.unlockUser(email);
         return ResponseEntity.ok(responseDto);
@@ -148,29 +146,7 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Пользователь добавляем книгу в корзину", description = "Доступно только Пользователю(USER_ROLE), у которых заполнены все поля в UpdateUser")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Пользователь успешно добавли книгу в корзину", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "403", description = "Для того что бы добавить книгу в корзину, юзер должен заполнить свои данные", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "404", description = "Книга не найдена", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "410", description = "Книги нет в наличии", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ApiExceptionInfo.class)))})
-    @PutMapping("/{userId}/books/{bookId}")
-    public void addBookToCart(@PathVariable Long userId,
-                              @PathVariable Long bookId) {
-        userService.addBookToUserCart(userId, bookId);
 
-
-    }
 
 
 }

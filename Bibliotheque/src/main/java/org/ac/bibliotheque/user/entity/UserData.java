@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.ac.bibliotheque.cart.entity.Cart;
 import org.ac.bibliotheque.role.Role;
+import org.ac.bibliotheque.reservedBooks.entity.Wishlist;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -59,6 +60,10 @@ public class UserData implements UserDetails {
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
+
+    @OneToOne(mappedBy = "userData",cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private  Wishlist wishlist;
 
 
     @Override

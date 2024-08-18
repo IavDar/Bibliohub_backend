@@ -38,7 +38,12 @@ public class Cart {
         bookList.add(book);
     }
     public void deleteBook(Book book){
+        bookList.remove(book);
+    }
+
+    public void clearCart(){
         bookList.clear();
     }
+
 
 }

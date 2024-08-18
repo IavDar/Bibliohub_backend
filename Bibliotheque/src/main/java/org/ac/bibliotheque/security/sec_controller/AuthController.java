@@ -1,6 +1,11 @@
 package org.ac.bibliotheque.security.sec_controller;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.security.auth.message.AuthException;
 import lombok.RequiredArgsConstructor;
 import org.ac.bibliotheque.security.auth_dto.LoginRequestDto;
@@ -22,6 +27,23 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
+
+
+    @Operation(summary = "Залогиниться", description = "Доступно Юзеру,Библиотеке и Админу")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Авторизация прошла успешно"),
+            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Пользователь заблокирован", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "400", description = "Вы ввели неверный пароль", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "422", description = "Не пройдена валидация пароля", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class)))})
     @PostMapping("/login")
     public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {
         try {
@@ -37,16 +59,6 @@ public class AuthController {
         return authService.getNewAccessToken(requestDto.getRefreshToken());
     }
 
-
-    @GetMapping("/authorize")
-    public String authorize() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.isAuthenticated()) {
-            return "User is authorized";
-        } else {
-            return "User is not authorized";
-        }
-    }
 
 
 
