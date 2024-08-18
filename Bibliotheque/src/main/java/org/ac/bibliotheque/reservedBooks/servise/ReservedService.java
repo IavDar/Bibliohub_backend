@@ -10,7 +10,7 @@ import org.ac.bibliotheque.user.exception_handing.Exceptions.CartIsEmpty;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.UserForbidden;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.UserNotFoundException;
 import org.ac.bibliotheque.user.user_repository.UserRepository;
-import org.ac.bibliotheque.reservedBooks.repository.WishListRepository;
+import org.ac.bibliotheque.reservedBooks.repository.ReservedListRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservedService {
 
-    private final WishListRepository wishlistRepository;
+    private final ReservedListRepository wishlistRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
 
@@ -39,7 +39,7 @@ public class ReservedService {
             if (book.getAvailable() <= 0) {
                 throw new BookIsEmpty(String.format("Книги %s нет в наличии", book.getTitle()));
             }
-            user.getWishlist().addBook(book);
+            user.getReservedList().addBook(book);
             book.setQuantity(book.getQuantity() - 1);
         }
         user.getCart().clearCart();
@@ -50,6 +50,6 @@ public class ReservedService {
 
     public List<Book> checkUserWishlist(Long userId){
         UserData userData = userRepository.findById(userId).orElseThrow(()->new UserNotFoundException(String.format("Пользователь %s не найден", userId)));
-        return userData.getWishlist().getBooks();
+        return userData.getReservedList().getBooks();
     }
 }

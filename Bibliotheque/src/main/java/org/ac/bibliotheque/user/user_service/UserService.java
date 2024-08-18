@@ -11,7 +11,7 @@ import org.ac.bibliotheque.user.dto.UserResponseDto;
 import org.ac.bibliotheque.user.dto.UserUpdateDto;
 import org.ac.bibliotheque.user.entity.UserData;
 import org.ac.bibliotheque.user.user_repository.UserRepository;
-import org.ac.bibliotheque.reservedBooks.entity.Wishlist;
+import org.ac.bibliotheque.reservedBooks.entity.ReservedList;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -53,9 +53,9 @@ public class UserService implements UserDetailsService {
         Cart cart = new Cart();
         cart.setUserData(user);
         user.setCart(cart);
-        Wishlist wishlist = new Wishlist();
+        ReservedList wishlist = new ReservedList();
         wishlist.setUserData(user);
-        user.setWishlist(wishlist);
+        user.setReservedList(wishlist);
         String roleTitle = requestDto.getRole();
         if (!roleTitle.equals("ROLE_USER") && !roleTitle.equals("ROLE_LIBRARY")) {
             throw new InvalidRoleException("Недопустимая роль: " + roleTitle);

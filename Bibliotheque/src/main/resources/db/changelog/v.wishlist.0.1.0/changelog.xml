@@ -12,4 +12,6 @@
     <include file="db/changelog/v.wishlist.0.1.0/create-forgein-key-user-wishlist.xml"/>
     <include file="db/changelog/v.wishlist.0.1.0/create-table-wishlist-to-books.xml"/>
     <include file="db/changelog/v.wishlist.0.1.0/create-forgein-key-wishlist-book.xml"/>
+    <include file="db/changelog/v.wishlist.0.1.0/rename-wihlist-to-reserved.xml"/>
+    <include file="db/changelog/v.wishlist.0.1.0/rename-wishlist-books.xml"/>
 </databaseChangeLog>
