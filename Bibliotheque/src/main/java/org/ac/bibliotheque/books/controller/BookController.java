@@ -1,12 +1,14 @@
 package org.ac.bibliotheque.books.controller;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
+import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.exception_handling.ResponseBook;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookAuthorNotFoundException;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookIsbnNotFoundException;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,8 +27,9 @@ public class BookController {
     //  localhost:8080
 
     @PostMapping
-    public BookDto addBook(@RequestBody BookDto book) {
-        return service.addBook(book);
+    public ResponseEntity<Book> addBook(@RequestBody BookDto bookDto) {
+        Book book = service.addBook(bookDto);
+        return ResponseEntity.ok(book);
     }
 
 /*  JSON answer:
@@ -43,14 +46,14 @@ public class BookController {
 */
 
     @PutMapping
-    public BookDto update(@RequestBody BookDto book) {
+    public Book update(@RequestBody BookDto book) {
         return service.update(book);
     }
 
     @DeleteMapping("/{id}")
-    public BookDto delete(@PathVariable String id) {
+    public Book delete(@PathVariable String id) {
         if (id != null) {
-            BookDto book = service.getBookById(Long.parseLong(id));
+            Book book = service.getBookById(Long.parseLong(id));
             service.deleteBookById(Long.parseLong(id));
             return book;
         }
@@ -78,25 +81,25 @@ public class BookController {
 //    }
 
     @GetMapping("/all")
-    public List<BookDto> getAllBooks() {
+    public List<Book> getAllBooks() {
 
         return service.getAllBooks();
     }
 
 
     @GetMapping("/search?title={title}")
-    public BookDto getBooksByTitle(@RequestParam String title){
+    public Book getBooksByTitle(@RequestParam String title){
         return service.getBookByTitle(title);
     }
 
     @GetMapping("/search?isbn={isbn}")
-    public BookDto getBooksByIsbn(@RequestParam String isbn){
+    public Book getBooksByIsbn(@RequestParam String isbn){
         return service.getBookByIsbn(isbn);
     }
 
 
     @GetMapping("/search?author={author}")
-    public BookDto getBooksByAuthorSurname(@RequestParam String author){
+    public Book getBooksByAuthorSurname(@RequestParam String author){
         return service.getBookByAuthorSurname(author);
     }
 

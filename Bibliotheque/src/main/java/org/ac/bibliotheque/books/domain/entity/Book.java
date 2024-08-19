@@ -18,7 +18,7 @@ public class Book {
     @NotNull(message = "Book title cannot be null")
     @NotBlank(message = "Book title cannot be empty")
     @Pattern(
-            regexp = "[A-Za-z]{2,}",
+            regexp = ".{2,}",
             message = "Book title should be at least 3 character length "
     )
     @Column(name = "title")
