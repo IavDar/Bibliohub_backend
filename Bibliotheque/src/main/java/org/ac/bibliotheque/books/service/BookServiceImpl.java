@@ -5,10 +5,12 @@ import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.repository.BookRepository;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
 import org.ac.bibliotheque.books.service.mapping.BookMappingService;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Service
 public class BookServiceImpl implements BookService {
 
 
