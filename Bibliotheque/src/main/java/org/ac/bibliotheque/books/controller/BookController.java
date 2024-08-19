@@ -15,11 +15,11 @@ import java.util.List;
 @RequestMapping("/books")
 public class BookController {
 
-    private BookService service;
+    private final BookService service;
 
-//    public BookController(BookService service) {
-//        this.service = service;
-//    }
+    public BookController(BookService service) {
+        this.service = service;
+    }
 
     //  CRUD Create Read Update Delete // Post Get Put Delete
     //  localhost:8080
