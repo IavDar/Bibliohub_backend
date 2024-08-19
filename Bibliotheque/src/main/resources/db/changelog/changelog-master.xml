@@ -14,8 +14,8 @@
     <include file="v.books.0.2.0/changelog.xml" relativeToChangelogFile="true"/>
     <include file="v.cart.v.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
     <include file="v.cart-book.v.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
+    <include file="v.books.0.2.1/changelog.xml" relativeToChangelogFile="true"/>
     <include file="v.reserved.0.1.0/changelog.xml" relativeToChangelogFile="true"/>
 
-    <include file="v.books.0.2.1/changelog.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -8,10 +8,8 @@
 
     </changeSet>
 
-    <include file="/db/changelog/v.reserved.0.1.0/create-table-wishlist.xml"/>
-    <include file="/db/changelog/v.reserved.0.1.0/create-table-wishlist-to-books.xml"/>
-    <include file="/db/changelog/v.reserved.0.1.0/rename-wishlist-to-reserved.xml"/>
-    <include file="/db/changelog/v.reserved.0.1.0/rename-wishlist-books.xml"/>
+    <include file="/db/changelog/v.reserved.0.1.0/create-table-reserved.xml"/>
+    <include file="/db/changelog/v.reserved.0.1.0/create-table-reserved-to-books.xml"/>
     <include file="/db/changelog/v.reserved.0.1.0/create-foreign-key-user-reserved.xml"/>
     <include file="/db/changelog/v.reserved.0.1.0/create-foreign-key-reserved-book.xml"/>
 
