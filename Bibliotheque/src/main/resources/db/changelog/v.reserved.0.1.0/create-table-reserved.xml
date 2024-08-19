@@ -4,12 +4,13 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="create-table-wishlist-to-books" author="vladn09">
-        <createTable tableName="wishlist_books">
-            <column name="wishlist_id" type="bigint">
-                <constraints nullable="false"/>
+    <changeSet id="create-table-reserved" author="vladn09">
+
+        <createTable tableName="reserved">
+            <column name="id"    type="bigint" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="book_id" type="bigint">
+            <column name="user_id" type="bigint">
                 <constraints nullable="false"/>
             </column>
         </createTable>
