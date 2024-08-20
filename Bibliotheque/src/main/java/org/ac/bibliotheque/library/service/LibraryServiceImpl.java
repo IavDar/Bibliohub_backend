@@ -1,5 +1,7 @@
 package org.ac.bibliotheque.library.service;
 
+import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.books.repository.BookRepository;
 import org.ac.bibliotheque.library.domain.dto.LibraryDto;
 import org.ac.bibliotheque.library.domain.entity.Library;
 import org.ac.bibliotheque.library.exception_handling.exceptions.LibraryNotFoundException;
@@ -17,10 +19,12 @@ public class LibraryServiceImpl implements LibraryService {
 
     private LibraryRepository repository;
     private final LibraryMappingService mappingService;
+    private BookRepository bookRepository;
 
-    public LibraryServiceImpl(LibraryRepository repository, LibraryMappingService mappingService) {
+    public LibraryServiceImpl(LibraryRepository repository, LibraryMappingService mappingService, BookRepository bookRepository) {
         this.repository = repository;
         this.mappingService = mappingService;
+        this.bookRepository = bookRepository;
     }
 
     @Override
@@ -102,6 +106,10 @@ public class LibraryServiceImpl implements LibraryService {
     @Override
     public void deleteById(Long id) {
         repository.findById(id).orElseThrow(() -> new LibraryNotFoundException(String.format("Library with id %s not found", id)));
+        List<Book> allByLibraryId = bookRepository.findAllByLibraryId(id);
+        for (Book book : allByLibraryId) {
+            bookRepository.delete(book);
+        }
         repository.deleteById(id);
     }
 
