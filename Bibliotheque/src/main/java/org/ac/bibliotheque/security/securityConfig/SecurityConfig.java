@@ -62,7 +62,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/books/all").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/search?title={title}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/search?isbn={isbn}").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/books/search??author={author}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/books/search?author={author}").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic(AbstractHttpConfigurer::disable)

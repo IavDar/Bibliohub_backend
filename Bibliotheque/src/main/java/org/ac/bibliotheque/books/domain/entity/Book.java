@@ -9,6 +9,9 @@ import jakarta.validation.constraints.Pattern;
 @Table(name = "books")
 public class Book {
 
+    public Book() {
+
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +43,7 @@ public class Book {
     @NotNull(message = "Book title cannot be null")
     @NotBlank(message = "Book title cannot be empty")
     @Pattern(
-            regexp = "[-0-9]{13,}",
+            regexp = "[0-9]{13}",
             message = "Book ISBN should be at least 13 counts length "
     )
     @Column(name = "isbn")
