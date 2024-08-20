@@ -1,6 +1,7 @@
 package org.ac.bibliotheque.books.service;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
+import org.ac.bibliotheque.books.domain.dto.TitleDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookIdNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
@@ -107,8 +108,8 @@ public class BookServiceImpl implements BookService {
     public Book getBookByAuthorSurname(String author) {
         String[] arguments = author.split(" ");
         // splitt into two parts
-        if (arguments[1] == null) {
-            Book book = repository.findByAuthorName(author);
+        if (arguments[1] == null || arguments[1].trim().isEmpty()) {
+            Book book = repository.findByAuthorSurname(author);
             return (book);
         } else {
             Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
@@ -131,7 +132,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book deleteBookById(Long id) {
-        Book book = repository.getById(id);
+        Book book = repository.findById(id).orElseThrow(() -> new BookIdNotFoundException(id));
         repository.deleteById(id);
         return book;
     }
