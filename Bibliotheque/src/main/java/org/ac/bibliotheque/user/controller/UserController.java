@@ -28,18 +28,18 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Регистрация пользователя", description = "Доступно всем")
+    @Operation(summary = "user-registration", description = "available to everyone")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201",
-                    description = "Пользователь зарегистрирован",
+                    description = "user is registered",
                     content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "400", description = "empty email or null", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "422", description = "email validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "409", description = "Имеил уже используется", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "409", description = "email is already in use", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация пароля", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "422", description = "password validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
@@ -49,13 +49,13 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Удаление пользователя", description = "Доступно только Адмнистратору")
-    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "Пользователь удален"),
-            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
+    @Operation(summary = "deleting a user", description = "available only to administrator")
+    @ApiResponses(value = {@ApiResponse(responseCode = "204", description = "user deleted"),
+            @ApiResponse(responseCode = "400", description = "empty email or null", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "422", description = "email validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", description = "user not found", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
     @ResponseStatus(HttpStatus.OK)
     @DeleteMapping
@@ -64,40 +64,41 @@ public class UserController {
 
     }
 
-    @Operation(summary = "Вывести всех доступных пользователей", description = "Доступно только администратору")
+    @Operation(summary = "list all available users", description = "only available to administrator")
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     public List<UserData> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    @Operation(summary = "Назначение роли админом", description = "Доступно только Адмнистратору")
+    @Operation(summary = "assigning a role as an admin", description = "available only to administrator")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Пользователь успешно назначен администратором", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "200", description = "The user has been successfully assigned as an administrator", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", description = "user not found", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "400", description = "empty email or null", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "422", description = "email validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "208", description = "Пользователь уже назначен администратором", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "208", description = "the user is already assigned as an administrator", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
-    @PutMapping("/appoint-as-admin")
+    @PutMapping("/set-role-admin")
     public ResponseEntity<UserResponseDto> setAdmin(@RequestBody UserEmailDto requestDto) {
         UserResponseDto responseDto = userService.changeRoleOnAdmin(requestDto);
         return ResponseEntity.ok(responseDto);
     }
 
-    @Operation(summary = "Блокировка Юзера", description = "Доступно только Адмнистратору")
+    @Operation(summary = "user blocking", description = "available only to administrator")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Пользователь успешно заблокирван"),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "200", description = "user successfully blocked"),
+            @ApiResponse(responseCode = "422", description = "email validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", description = "user not found", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "400", description = "empty email or null", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "409", description = "Пользователь уже заблокирован", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "409", description = "user is already blocked", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
     @PutMapping("/block")
     public ResponseEntity<UserResponseDto> blockUser(@RequestBody UserEmailDto email) {
@@ -106,16 +107,16 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Разблокировать Юзера", description = "Доступно только Адмнистратору")
+    @Operation(summary = "unblock user", description = "available only to administrator")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Пользователь успешно разблокирован"),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "200", description = "user successfully unblocked"),
+            @ApiResponse(responseCode = "422", description = "email validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", description = "user not found", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "400", description = "empty email or null", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "409", description = "Пользователь не заблокирован", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "409", description = "user is not blocked", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
     @PutMapping("/unlock")
     public ResponseEntity<UserResponseDto> unlock(@RequestBody UserEmailDto email) {
@@ -130,14 +131,14 @@ public class UserController {
         return ResponseEntity.ok(userResponseDto);
     }
 
-    @Operation(summary = "Обновить данные Юзера", description = "Доступно только Пользователю")
+    @Operation(summary = "update user data", description = "available only to the user")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Пользователь успешно обновил данные"),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "200", description = "the user has successfully updated the data"),
+            @ApiResponse(responseCode = "422", description = "email validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", description = "user not found", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "400", description = "empty email or null", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
     @PutMapping
     public ResponseEntity<UserData> updateUser(@RequestBody UserUpdateDto updateDto) {

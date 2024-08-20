@@ -29,20 +29,20 @@ public class AuthController {
 
 
 
-    @Operation(summary = "Залогиниться", description = "Доступно Юзеру,Библиотеке и Админу")
+    @Operation(summary = "logIn", description = "available to user library and admin")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Авторизация прошла успешно"),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация имейл", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "200", description = "authorization was successful"),
+            @ApiResponse(responseCode = "422", description = "email validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "404", description = "Пользователь не найден", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", description = "user not found", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "403", description = "Пользователь заблокирован", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "403", description = "user is blocked", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "400", description = "Вы ввели неверный пароль", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "400", description = "you entered the wrong password", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "400", description = "Пустой имеил или null", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "400", description = "empty email or null", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class))),
-            @ApiResponse(responseCode = "422", description = "Не пройдена валидация пароля", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "422", description = "password validation failed", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
     @PostMapping("/login")
     public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto) {

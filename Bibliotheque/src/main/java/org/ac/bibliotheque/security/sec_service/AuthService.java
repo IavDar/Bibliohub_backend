@@ -31,17 +31,17 @@ public class AuthService {
     public LoginResponseDto login(LoginRequestDto requestDto) throws AuthException {
         String email = requestDto.getEmail();
         if (email==null||email.isEmpty()){
-            throw new IllegalArgumentException("Имеил не может быть пустым");
+            throw new IllegalArgumentException("Email cannot be empty");
         }
         if (!isValidEmail(email)){
-            throw new EmailIsNotValid(String.format("Вам имеил %s не корректно введен", email));
+            throw new EmailIsNotValid(String.format("Your email %s was entered incorrectly", email));
         }
         UserData foundUser = (UserData) userService.loadUserByUsername(email);
 
         if (!foundUser.isActive()){
-            throw new UserForbidden("Вы заблокированы");
-        }else if (isValidPassword(requestDto.getPassword())){
-            throw new PasswordIsNotValid("Пароль должен содержать 8 симоволов,1 спец знак , заглавную букву и 1 цифру");
+            throw new UserForbidden("you are blocked");
+        }else if (!isValidPassword(requestDto.getPassword())){
+            throw new PasswordIsNotValid("The password must contain 8 characters, 1 special character, a capital letter and 1 number");
         } else if (bCryptPasswordEncoder.matches(requestDto.getPassword(), foundUser.getPassword())) {
 
             String accessToken = tokenService.generateAccessToken(foundUser);
@@ -60,9 +60,9 @@ public class AuthService {
                     foundUser.getPhone(),
                     foundUser.getRoles(),
                     accessToken,refreshToken,
-                    "Вы успеешно аторизовались");
+                    "you have successfully logged in");
         } else {
-            throw new InvalidPassword("Вы ввели неверный пароль");
+            throw new InvalidPassword("you entered the wrong password");
 
         }
 
@@ -89,12 +89,12 @@ public class AuthService {
 
 
     private boolean isValidEmail(String email) {
-        String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
+        String emailRegex = "^(?!.*\\.\\.)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$";
         return email.matches(emailRegex);
     }
 
     private boolean isValidPassword(String password) {
-        String passwordRegex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!_*])(?!.*\\s).{8,32}$";
+        String passwordRegex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!_*])(?!.*\\s).{8,32}$";
         return password.matches(passwordRegex);
     }
 
