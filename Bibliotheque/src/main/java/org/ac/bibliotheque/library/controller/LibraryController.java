@@ -24,12 +24,11 @@ public class LibraryController {
     }
 
 
-    @Operation(summary = "Register library", description = "Available to user with the library role")
+    @Operation(summary = "Register library", description = "Registered user with role_library only")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "Library registered",
                     content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "400", description = "Library values cannot be null or empty",
+            @ApiResponse(responseCode = "400", description = "Required fields cannot be null or blank",
                     content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Response.class)))})
 
@@ -41,12 +40,11 @@ public class LibraryController {
     }
 
 
-    @Operation(summary = "Search library by id", description = "Available to user with the library role")
+    @Operation(summary = "Search library by id", description = "Registered user with role_library only")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "Library found",
                     content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "404", description = "Library not found", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Response.class)))})
 
     @GetMapping("/{id}")
@@ -54,18 +52,17 @@ public class LibraryController {
         return service.getLibraryById(id);
     }
 
-    @Operation(summary = "List all available libraries", description = "Available to user with the library role")
+    @Operation(summary = "List all available libraries", description = "Registered user with role_library only")
     @GetMapping("/all")
     public List<LibraryDto> getAll() {
         return service.getAllLibraries();
     }
 
-    @Operation(summary = "Search library by librarian id", description = "Available to user with the library role")
+    @Operation(summary = "Search library by librarian id", description = "Registered user with role_library only")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "Found library(s) by librarian id",
                     content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "404", description = "No libraries found with this librarian id", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Response.class)))})
 
     @GetMapping
@@ -73,12 +70,12 @@ public class LibraryController {
         return service.getLibrariesByLibrarianId(librarianId);
     }
 
-    @Operation(summary = "Update library", description = "Available to user with the library role")
+    @Operation(summary = "Update library", description = "Registered user with role_library only")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
-                    description = "Library information updated",
+                    description = "Library data updated successfully",
                     content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "404", description = "Library not found", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Response.class)))})
 
     @PutMapping
@@ -88,10 +85,10 @@ public class LibraryController {
     }
 
 
-    @Operation(summary = "Delete library", description = "Available to user with the library role")
+    @Operation(summary = "Delete library", description = "Registered user with role_library only")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Library deleted"),
-            @ApiResponse(responseCode = "404", description = "Library not found", content = @Content(mediaType = "application/json",
+            @ApiResponse(responseCode = "200"),
+            @ApiResponse(responseCode = "404", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = Response.class)))})
 
     @ResponseStatus(HttpStatus.OK)
