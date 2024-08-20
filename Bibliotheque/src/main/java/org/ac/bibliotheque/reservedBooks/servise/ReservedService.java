@@ -26,18 +26,18 @@ public class ReservedService {
 
     public void reservedBook(Long userId) {
         UserData user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Пользователь не найден"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         if (user.getCity() == null || user.getCountry() == null || user.getName() == null || user.getUsername() == null
                 || user.getStreet() == null || user.getNumber() == null || user.getZip() == null || user.getPhone() == null) {
-            throw new UserForbidden("Заполните нужные поля");
+            throw new UserForbidden("Fill in the required fields");
         }
         List<Book> booksInCart = user.getCart().getBookList();
         if (booksInCart.isEmpty()) {
-            throw new CartIsEmpty("Коризина пустая");
+            throw new CartIsEmpty("The basket is empty");
         }
         for (Book book : booksInCart) {
             if (book.getAvailable() <= 0) {
-                throw new BookIsEmpty(String.format("Книги %s нет в наличии", book.getTitle()));
+                throw new BookIsEmpty(String.format("Book %s is out of stock", book.getTitle()));
             }
             user.getReservedList().addBook(book);
             book.setQuantity(book.getQuantity() - 1);
@@ -49,7 +49,7 @@ public class ReservedService {
 
 
     public List<Book> checkUserWishlist(Long userId){
-        UserData userData = userRepository.findById(userId).orElseThrow(()->new UserNotFoundException(String.format("Пользователь %s не найден", userId)));
+        UserData userData = userRepository.findById(userId).orElseThrow(()->new UserNotFoundException(String.format("User %s not found", userId)));
         return userData.getReservedList().getBooks();
     }
 }

@@ -27,17 +27,17 @@ public class CartService {
     @Transactional
     public void addBookToUserCart(Long userId, Long bookId) {
         UserData userData = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException(String.format("Пользователь %s не найден", userId))
+                new UserNotFoundException(String.format("User %s not found", userId))
         );
         if (userData.getCity() == null || userData.getCountry() == null || userData.getName() == null || userData.getUsername() == null
                 || userData.getStreet() == null || userData.getNumber() == null || userData.getZip() == null || userData.getPhone() == null) {
-            throw new UserForbidden("Заполните нужные поля");
+            throw new UserForbidden("Fill in the required fields");
         }
 
         Book book = bookRepository.findById(bookId).orElseThrow(() ->
-                new BookTitleNotFoundException("Книга не найдена"));
+                new BookTitleNotFoundException("Book not found"));
         if (book.getAvailable() <= 0) {
-            throw new BookIsEmpty(String.format("Книги %s нет в наличии PS Экземпшин от Юзера", book.getTitle()));
+            throw new BookIsEmpty(String.format("Book %s is out of stock", book.getTitle()));
         }
         userData.getCart().addBook(book);
         userRepository.save(userData);
@@ -46,16 +46,16 @@ public class CartService {
 
     public List<Book> checkUserCart(Long userId) {
         UserData userData = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException(String.format("Пользователь %s не найден", userId))
+                new UserNotFoundException(String.format("User %s not found", userId))
         );
         return new ArrayList<>(userData.getCart().getBookList());
     }
 
     public List<Book> removeBookFromCart(Long userId, Long bookId) {
         UserData userData = userRepository.findById(userId).orElseThrow(() ->
-                new UserNotFoundException(String.format("Пользователь %s не найден", userId)));
+                new UserNotFoundException(String.format("User %s not found", userId)));
         Book book = bookRepository.findById(bookId).orElseThrow(() ->
-                new BookTitleNotFoundException("Книга не найдена"));
+                new BookTitleNotFoundException("Book not found"));
 
         userData.getCart().deleteBook(book);
         userRepository.save(userData);
