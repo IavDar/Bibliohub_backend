@@ -16,25 +16,31 @@ public class Library {
     private Long id;
 
     @NotNull(message = "Library name cannot be null")
-    @NotBlank(message = "Library name cannot be empty" )
+    @NotBlank(message = "Library name cannot be empty")
     @Column(name = "name")
     private String name;
 
+    @NotBlank(message = "Country cannot be empty")
     @Column(name = "country")
     private String country;
 
+    @NotBlank(message = "City cannot be empty")
     @Column(name = "city")
     private String city;
 
+    @NotBlank(message = "Street cannot be empty")
     @Column(name = "street")
     private String street;
 
+    @NotBlank(message = "Number cannot be empty")
     @Column(name = "number")
     private String number;
 
+    @NotBlank(message = "Zip cannot be empty")
     @Column(name = "zip")
     private String zip;
 
+    @NotBlank(message = "Phone cannot be empty")
     @Column(name = "phone")
     private String phone;
 
