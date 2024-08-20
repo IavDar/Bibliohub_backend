@@ -9,7 +9,7 @@ public interface BookService {
 
 
     Book addBook(BookDto book);
-    Book update(BookDto book);
+    Book update(Book book);
     Book getBookById(Long id);
     Book getBookByTitle(String title);
     Book getBookByIsbn(String isbn);

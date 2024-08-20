@@ -2,6 +2,7 @@ package org.ac.bibliotheque.books.service;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookIdNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
 import org.ac.bibliotheque.books.service.mapping.BookMappingService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -63,61 +65,42 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book update(BookDto dto) {
-        Book book = mappingService.mapDtoToEntity(dto);
+    public Book update(Book book) {
+//        Book newBook = mappingService.mapDtoToEntity(book);
 
-        if (book == null) {
+        Book newBook = getBookById(book.getId());
+
+        if (newBook == null) {
             return null;
         }
-        if (dto.getTitle() != null) {
-            book.setTitle(dto.getTitle());
-        }
-        if (dto.getIsbn() != null) {
-            book.setIsbn(dto.getIsbn());
-        }
-        if (dto.getAuthorName() != null) {
-            book.setAuthorName(dto.getAuthorName());
-        }
-        if (dto.getAuthorSurname() != null) {
-            book.setAuthorSurname(dto.getAuthorSurname());
-        }
-        if (dto.getYear() != null) {
-            book.setYear(dto.getYear());
-        }
-        if (dto.getPublisher() != null) {
-            book.setPublisher(dto.getPublisher());
-        }
-        if (dto.getQuantity() != null) {
-            book.setQuantity(dto.getQuantity());
-        }
-        if (dto.getAvailable() != null) {
-            book.setAvailable(dto.getAvailable());
-        }
-        if (dto.getLibraryId() != null) {
-            book.setLibraryId(dto.getLibraryId());
-        }
 
+        newBook.setTitle(book.getTitle());
+        newBook.setAuthorName(book.getAuthorName());
+        newBook.setAuthorSurname(book.getAuthorSurname());
+        newBook.setYear(book.getYear());
+        newBook.setIsbn(book.getIsbn());
+        newBook.setPublisher(book.getPublisher());
+        newBook.setQuantity(book.getQuantity());
+        newBook.setAvailable(book.getAvailable());
+        newBook.setLibraryId(book.getLibraryId());
 
-        return book;
+        return newBook;
     }
 
     @Override
     public Book getBookById(Long id) {
-        Book book = repository.getById(id);
-
-        return book;
+        return repository.findById(id).orElseThrow(
+                () -> new BookIdNotFoundException(id) );
     }
 
     @Override
     public Book getBookByTitle(String title) {
-        Book book = repository.findByTitle(title);
-        return (book);
+        return (repository.findByTitle(title));
     }
 
     @Override
     public Book getBookByIsbn(String isbn) {
-        Book book = repository.findByIsbn(isbn);
-        return (book);
+        return (repository.findByIsbn(isbn));
     }
 
     @Override
