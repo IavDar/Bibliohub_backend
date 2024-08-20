@@ -1,7 +1,9 @@
 package org.ac.bibliotheque.books.service;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
+import org.ac.bibliotheque.books.domain.dto.TitleDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookIdNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
 import org.ac.bibliotheque.books.service.mapping.BookMappingService;
@@ -9,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -23,21 +26,10 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto addBook(BookDto dto) {
-        Book entity = mappingService.mapDtoToEntity(dto);
-        repository.save(entity);
+    public Book addBook(BookDto dto) {
 
-        return mappingService.mapEntityToDto(entity);
-    }
+        Book book = new Book();
 
-    @Override
-    @Transactional
-    public BookDto update(BookDto dto) {
-        Book book = mappingService.mapDtoToEntity(dto);
-
-        if (book == null) {
-            return null;
-        }
         if (dto.getTitle() != null) {
             book.setTitle(dto.getTitle());
         }
@@ -66,39 +58,62 @@ public class BookServiceImpl implements BookService {
             book.setLibraryId(dto.getLibraryId());
         }
 
+        repository.save(book);
 
-        return mappingService.mapEntityToDto(book);
+        return book;
+
     }
 
     @Override
-    public BookDto getBookById(Long id) {
-        Book book = repository.getById(id);
+    @Transactional
+    public Book update(Book book) {
+//        Book newBook = mappingService.mapDtoToEntity(book);
 
-        return mappingService.mapEntityToDto(book);
+        Book newBook = getBookById(book.getId());
+
+        if (newBook == null) {
+            return null;
+        }
+
+        newBook.setTitle(book.getTitle());
+        newBook.setAuthorName(book.getAuthorName());
+        newBook.setAuthorSurname(book.getAuthorSurname());
+        newBook.setYear(book.getYear());
+        newBook.setIsbn(book.getIsbn());
+        newBook.setPublisher(book.getPublisher());
+        newBook.setQuantity(book.getQuantity());
+        newBook.setAvailable(book.getAvailable());
+        newBook.setLibraryId(book.getLibraryId());
+
+        return newBook;
     }
 
     @Override
-    public BookDto getBookByTitle(String title) {
-        Book book = repository.findByTitle(title);
-        return mappingService.mapEntityToDto(book);
+    public Book getBookById(Long id) {
+        return repository.findById(id).orElseThrow(
+                () -> new BookIdNotFoundException(id) );
     }
 
     @Override
-    public BookDto getBookByIsbn(String isbn) {
-        Book book = repository.findByIsbn(isbn);
-        return mappingService.mapEntityToDto(book);
+    public Book getBookByTitle(String title) {
+        return (repository.findByTitle(title));
     }
 
     @Override
-    public BookDto getBookByAuthorSurname(String author) {
+    public Book getBookByIsbn(String isbn) {
+        return (repository.findByIsbn(isbn));
+    }
+
+    @Override
+    public Book getBookByAuthorSurname(String author) {
         String[] arguments = author.split(" ");
         // splitt into two parts
-        if (arguments[1] == null) {
-            Book book = repository.findByAuthorName(author);
-            return mappingService.mapEntityToDto(book);
+        if (arguments[1] == null || arguments[1].trim().isEmpty()) {
+            Book book = repository.findByAuthorSurname(author);
+            return (book);
         } else {
             Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
-            return mappingService.mapEntityToDto(book);
+            return (book);
         }
     }
 
@@ -116,40 +131,46 @@ public class BookServiceImpl implements BookService {
 //    }
 
     @Override
-    public void deleteBookById(Long id) {
+    public Book deleteBookById(Long id) {
+        Book book = repository.findById(id).orElseThrow(() -> new BookIdNotFoundException(id));
         repository.deleteById(id);
+        return book;
     }
 
     @Override
-    public void deleteBookByIsbn(String isbn) {
+    public Book deleteBookByIsbn(String isbn) {
+        Book book = repository.findByIsbn(isbn);
         repository.deleteByIsbn(isbn);
+        return book;
     }
 
     @Override
-    public void deleteBookByTitle(String title) {
+    public Book deleteBookByTitle(String title) {
+        Book book = repository.findByTitle(title);
         repository.deleteByTitle(title);
+        return book;
     }
 
     @Override
-    public List<BookDto> getAllBooks() {
+    public List<Book> getAllBooks() {
 
         return repository.findAll().stream()
                 .filter(x -> x.getAvailable() > 0)
-                .map(mappingService::mapEntityToDto).toList();
+                .toList();
 
     }
 
     @Override
-    public List<BookDto> getAllBooksByLibraryId(Long libraryId) {
+    public List<Book> getAllBooksByLibraryId(Long libraryId) {
         return repository.findAllByLibraryId(libraryId).stream()
-                .map(mappingService::mapEntityToDto).toList();
+                .toList();
     }
 
     @Override
     public void deleteAllBooksByLibraryId(Long libraryId) {
-        List<BookDto> allBooksByLibraryId = getAllBooksByLibraryId(libraryId);
-        for (BookDto bookDto : allBooksByLibraryId) {
-            deleteBookById(bookDto.getId());
+        List<Book> allBooksByLibraryId = getAllBooksByLibraryId(libraryId);
+        for (Book book : allBooksByLibraryId) {
+            deleteBookById(book.getId());
         }
     }
 

@@ -25,6 +25,7 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public LibraryDto save(LibraryDto dto) {
+
         Library entity = mappingService.mapDtoToEntity(dto);
         try {
             repository.save(entity);
@@ -45,20 +46,28 @@ public class LibraryServiceImpl implements LibraryService {
 
     @Override
     public LibraryDto getLibraryById(Long id) {
+
         Library library = repository.findById(id).orElse(null);
         if (library == null) {
-            return null;
+            throw new LibraryNotFoundException(String.format("Library with id %d not found", id));
         }
         return mappingService.mapEntityToDto(library);
     }
 
     @Override
     public List<LibraryDto> getLibrariesByLibrarianId(Long librarianId) {
-        return repository.findAll()
+        List<LibraryDto> list = repository.findAll()
                 .stream()
                 .filter(x -> x.getLibrarian_id().equals(librarianId))
                 .map(mappingService::mapEntityToDto)
                 .toList();
+
+        if (list.isEmpty()) {
+            throw new LibraryNotFoundException(String.format("Library with librarianId %d not found", librarianId));
+        }
+
+        return list;
+
     }
 
 

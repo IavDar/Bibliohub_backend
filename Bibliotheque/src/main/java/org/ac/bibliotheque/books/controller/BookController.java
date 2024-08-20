@@ -1,12 +1,21 @@
 package org.ac.bibliotheque.books.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.ac.bibliotheque.books.domain.dto.BookDto;
+import org.ac.bibliotheque.books.domain.dto.TitleDto;
+import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.exception_handling.ResponseBook;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookApiExceptionInfo;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookAuthorNotFoundException;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookIsbnNotFoundException;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,37 +33,70 @@ public class BookController {
     //  CRUD Create Read Update Delete // Post Get Put Delete
     //  localhost:8080
 
+
+    @Operation(summary = "Add a new book", description = "visible for library")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "book has been added",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "book could not be added",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+
+    })
     @PostMapping
-    public BookDto addBook(@RequestBody BookDto book) {
-        return service.addBook(book);
+    public ResponseEntity<Book> addBook(@RequestBody BookDto bookDto) {
+        Book book = service.addBook(bookDto);
+        return ResponseEntity.ok(book);
     }
 
-/*  JSON answer:
-{
-    "id": 1,
-    "title": "History",
-    "author": "Bergmann",
-    "ISBN": "657-8-16",
-    "year": 2010,
-    "library": "Central Library"
-    "quantity": 1,
-    "available": 1
-    }
-*/
-
-    @PutMapping
-    public BookDto update(@RequestBody BookDto book) {
-        return service.update(book);
-    }
-
-    @DeleteMapping("/{id}")
-    public BookDto delete(@PathVariable String id) {
-        if (id != null) {
-            BookDto book = service.getBookById(Long.parseLong(id));
-            service.deleteBookById(Long.parseLong(id));
-            return book;
+    /*  JSON answer:
+    {
+        "id": 1,
+        "title": "History",
+        "author": "Bergmann",
+        "ISBN": "657-8-16",
+        "year": 2010,
+        "library": "Central Library"
+        "quantity": 1,
+        "available": 1
         }
-        return null;
+    */
+    @Operation(summary = "edit a book in the library", description = "visible for library: provide id to find changeable book and other parameter to change them.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "book has been changed",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "book could not be find",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+
+    })
+    @PutMapping
+    public ResponseEntity<Book> update(@RequestBody Book book) {
+        Book newBook = service.update(book);
+        return ResponseEntity.ok(newBook);
+    }
+
+    @Operation(summary = "delete a book from the library", description = "only for library")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "book has been deleted",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404",
+                    description = "book could not be find",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
+    })
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Book> delete(@PathVariable Long id) {
+
+            return ResponseEntity.ok(service.deleteBookById(id));
+
     }
 
 //    @DeleteMapping("/isbn={isbn}")
@@ -67,7 +109,7 @@ public class BookController {
 //        return null;
 //    }
 
-//    @DeleteMapping("/title={title}")
+    //    @DeleteMapping("/title={title}")
 //    public BookDto delete(String title) {
 //        if (title != null || title.trim() != "") {
 //            BookDto book = service.getBookByTitle(title);
@@ -76,28 +118,72 @@ public class BookController {
 //        }
 //        return null;
 //    }
+    @Operation(summary = "Show all books", description = "visible for all")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "List of books have been provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "books have been found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
 
+    })
     @GetMapping("/all")
-    public List<BookDto> getAllBooks() {
+    public ResponseEntity<List<Book>> getAllBooks() {
 
-        return service.getAllBooks();
+        return ResponseEntity.ok(service.getAllBooks());
     }
 
 
-    @GetMapping("/search?title={title}")
-    public BookDto getBooksByTitle(@RequestParam String title){
-        return service.getBookByTitle(title);
+    @Operation(summary = "Look for a book in the library by title", description = "visible for all user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "book has been found"),
+            @ApiResponse(responseCode = "404",
+                    description = "book could not be find",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/title={title}")
+    public Book getBooksByTitle(@PathVariable String title) {
+        Book book = service.getBookByTitle(title);
+        return (book);
     }
 
-    @GetMapping("/search?isbn={isbn}")
-    public BookDto getBooksByIsbn(@RequestParam String isbn){
-        return service.getBookByIsbn(isbn);
+    @Operation(summary = "Look for a book in the library by ISBN", description = "visible for all user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "book has been found",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404",
+                    description = "book could not be find",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+
+    })
+    @GetMapping("/isbn={isbn}")
+    public ResponseEntity<Book> getBooksByIsbn(@PathVariable String isbn) {
+        return ResponseEntity.ok(service.getBookByIsbn(isbn));
     }
 
+    @Operation(summary = "Look for a book in the library by Author Surname, or Name and Surname divided by SPACE", description = "visible for all user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "book has been found",
+                    content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "404",
+                    description = "book could not be find",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
 
-    @GetMapping("/search?author={author}")
-    public BookDto getBooksByAuthorSurname(@RequestParam String author){
-        return service.getBookByAuthorSurname(author);
+    })
+    @GetMapping("/author={author}")
+    public ResponseEntity<Book> getBooksByAuthorSurname(@PathVariable String author) {
+        return ResponseEntity.ok(service.getBookByAuthorSurname(author));
     }
 
     @ExceptionHandler(BookTitleNotFoundException.class)

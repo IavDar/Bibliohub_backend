@@ -4,9 +4,13 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "books")
+@AllArgsConstructor
+@NoArgsConstructor
 public class Book {
 
 
@@ -18,7 +22,7 @@ public class Book {
     @NotNull(message = "Book title cannot be null")
     @NotBlank(message = "Book title cannot be empty")
     @Pattern(
-            regexp = "[A-Za-z]{2,}",
+            regexp = ".{2,}",
             message = "Book title should be at least 3 character length "
     )
     @Column(name = "title")
@@ -40,7 +44,7 @@ public class Book {
     @NotNull(message = "Book title cannot be null")
     @NotBlank(message = "Book title cannot be empty")
     @Pattern(
-            regexp = "[-0-9]{13,}",
+            regexp = "[0-9]{13}",
             message = "Book ISBN should be at least 13 counts length "
     )
     @Column(name = "isbn")
