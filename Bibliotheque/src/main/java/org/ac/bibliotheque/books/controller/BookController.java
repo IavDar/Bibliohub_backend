@@ -33,6 +33,23 @@ public class BookController {
     //  CRUD Create Read Update Delete // Post Get Put Delete
     //  localhost:8080
 
+    @Operation(summary = "upload list of books by a Json file", description = "for library: provide a Path to a file with a list of books")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "list of books has been added"),
+            @ApiResponse(responseCode = "404",
+                    description = "books could not be uploaded",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/upload={filePath}")
+    public ResponseEntity<String> uploadBooks(@PathVariable String filePath) {
+        service.importBooksFromJson(filePath);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @Operation(summary = "Add a new book", description = "visible for library")
     @ApiResponses(value = {

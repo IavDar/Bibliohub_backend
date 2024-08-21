@@ -1,5 +1,7 @@
 package org.ac.bibliotheque.books.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ac.bibliotheque.books.domain.dto.BookDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookIdNotFoundException;
@@ -9,8 +11,9 @@ import org.ac.bibliotheque.books.service.mapping.BookMappingService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -27,15 +30,19 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book addBook(BookDto dto) {
 
+        System.out.println("================================================================");
+        System.out.println(dto.toString());
 
         //Library ID check.
 //        change only book by Librarian!!!
-        Book book = new Book();
 
-        if (getBookByTitle(dto.getTitle()) != null) {
-            book = repository.findByTitle(dto.getTitle());
+        if (repository.findByTitle(dto.getTitle()) != null) {
+            System.out.println(dto.getTitle() + " already exists");
+            Book book = repository.findByTitle(dto.getTitle());
+            System.out.println(book);
         }
 
+        Book book = new Book();
 
         if (dto.getTitle() != null) {
             book.setTitle(dto.getTitle());
@@ -187,6 +194,18 @@ public class BookServiceImpl implements BookService {
         List<Book> allBooksByLibraryId = getAllBooksByLibraryId(libraryId);
         for (Book book : allBooksByLibraryId) {
             deleteBookById(book.getId());
+        }
+    }
+
+    public void importBooksFromJson(String filePath) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            List<Book> books = mapper.readValue(new File(filePath), new TypeReference<List<Book>>() {});
+            repository.saveAll(books);
+            System.out.println("List of books imported successfully");
+        } catch (IOException e) {
+            String message = e.getMessage();
+            System.out.println("something went wrong, no data imported");
         }
     }
 

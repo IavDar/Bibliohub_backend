@@ -26,4 +26,5 @@ public interface BookService {
     List<Book> getAllBooksByLibraryId(Long libraryId);
 
     void deleteAllBooksByLibraryId(Long libraryId);
+    void importBooksFromJson(String filePath);
 }

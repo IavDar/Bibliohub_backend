@@ -8,5 +8,6 @@
         <tagDatabase tag="v.books.0.2.1"/>
     </changeSet>
     <include file="add-foreign-key-books-library.xml" relativeToChangelogFile="true"/>
+    <include file="add-column-pictures.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

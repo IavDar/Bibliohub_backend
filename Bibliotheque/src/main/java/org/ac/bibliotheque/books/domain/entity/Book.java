@@ -41,10 +41,10 @@ public class Book {
     @Column(name = "year")
     private String year;
 
-    @NotNull(message = "Book title cannot be null")
-    @NotBlank(message = "Book title cannot be empty")
+    @NotNull(message = "ISBN cannot be null")
+    @NotBlank(message = "ISBN cannot be empty")
     @Pattern(
-            regexp = "[0-9]{13}",
+            regexp = "[-0-9]{13,}",
             message = "Book ISBN should be at least 13 counts length "
     )
     @Column(name = "isbn")
