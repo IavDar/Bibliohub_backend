@@ -56,6 +56,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/libraries").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/libraries").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/libraries/{id}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/books/upload={filePath}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/books").permitAll()
                         .requestMatchers(HttpMethod.PUT, "/books").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/books/{id}").permitAll()
