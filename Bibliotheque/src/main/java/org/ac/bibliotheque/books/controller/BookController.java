@@ -149,9 +149,8 @@ public class BookController {
     })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/title={title}")
-    public Book getBooksByTitle(@PathVariable String title) {
-        Book book = service.getBookByTitle(title);
-        return (book);
+    public ResponseEntity<List<Book>> getBooksByTitle(@PathVariable String title) {
+        return ResponseEntity.ok(service.getBookByTitle(title));
     }
 
     @Operation(summary = "Look for a book in the library by ISBN", description = "visible for all user")
@@ -166,7 +165,7 @@ public class BookController {
 
     })
     @GetMapping("/isbn={isbn}")
-    public ResponseEntity<Book> getBooksByIsbn(@PathVariable String isbn) {
+    public ResponseEntity<List<Book>> getBooksByIsbn(@PathVariable String isbn) {
         return ResponseEntity.ok(service.getBookByIsbn(isbn));
     }
 
@@ -182,7 +181,7 @@ public class BookController {
 
     })
     @GetMapping("/author={author}")
-    public ResponseEntity<Book> getBooksByAuthorSurname(@PathVariable String author) {
+    public ResponseEntity<List<Book>> getBooksByAuthorSurname(@PathVariable String author) {
         return ResponseEntity.ok(service.getBookByAuthorSurname(author));
     }
 

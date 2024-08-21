@@ -1,7 +1,6 @@
 package org.ac.bibliotheque.books.service;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
-import org.ac.bibliotheque.books.domain.dto.TitleDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookIdNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
@@ -28,7 +27,15 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book addBook(BookDto dto) {
 
+
+        //Library ID check.
+//        change only book by Librarian!!!
         Book book = new Book();
+
+        if (getBookByTitle(dto.getTitle()) != null) {
+            book = repository.findByTitle(dto.getTitle());
+        }
+
 
         if (dto.getTitle() != null) {
             book.setTitle(dto.getTitle());
@@ -85,35 +92,44 @@ public class BookServiceImpl implements BookService {
         newBook.setAvailable(book.getAvailable());
         newBook.setLibraryId(book.getLibraryId());
 
+        repository.save(newBook);
+
         return newBook;
     }
 
     @Override
     public Book getBookById(Long id) {
         return repository.findById(id).orElseThrow(
-                () -> new BookIdNotFoundException(id) );
+                () -> new BookIdNotFoundException(id));
     }
 
     @Override
-    public Book getBookByTitle(String title) {
-        return (repository.findByTitle(title));
+    public List<Book> getBookByTitle(String title) {
+        return repository.findAll().stream()
+                .filter(x -> x.getTitle().equals(title.trim()))
+                .toList();
     }
 
     @Override
-    public Book getBookByIsbn(String isbn) {
-        return (repository.findByIsbn(isbn));
+    public List<Book> getBookByIsbn(String isbn) {
+        return repository.findAll().stream()
+                .filter(x -> x.getIsbn().equals(isbn.trim()))
+                .toList();
     }
 
     @Override
-    public Book getBookByAuthorSurname(String author) {
+    public List<Book> getBookByAuthorSurname(String author) {
+
         String[] arguments = author.split(" ");
         // splitt into two parts
         if (arguments[1] == null || arguments[1].trim().isEmpty()) {
-            Book book = repository.findByAuthorSurname(author);
-            return (book);
+            return repository.findAll().stream()
+                    .filter(book -> book.getAuthorSurname().equals(author)).toList();
         } else {
-            Book book = repository.findByAuthorNameAndAuthorSurname(arguments[0], arguments[1]);
-            return (book);
+            return repository.findAll().stream()
+                    .filter(book -> book.getAuthorName().equals(arguments[0])
+                            && book.getAuthorSurname().equals(arguments[1]))
+                    .toList();
         }
     }
 
