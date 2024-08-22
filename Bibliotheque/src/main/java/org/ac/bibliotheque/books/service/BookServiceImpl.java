@@ -199,6 +199,7 @@ public class BookServiceImpl implements BookService {
 
     public void importBooksFromJson(String filePath) {
         ObjectMapper mapper = new ObjectMapper();
+        System.out.println(filePath);
         try {
             List<Book> books = mapper.readValue(new File(filePath), new TypeReference<List<Book>>() {});
             repository.saveAll(books);

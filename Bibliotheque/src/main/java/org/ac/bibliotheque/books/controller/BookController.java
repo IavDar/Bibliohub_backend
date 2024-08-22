@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.ac.bibliotheque.books.domain.dto.BookDto;
-import org.ac.bibliotheque.books.domain.dto.TitleDto;
+import org.ac.bibliotheque.books.domain.dto.UploadFileDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.exception_handling.ResponseBook;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookApiExceptionInfo;
@@ -44,9 +44,9 @@ public class BookController {
 
     })
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/upload={filePath}")
-    public ResponseEntity<String> uploadBooks(@PathVariable String filePath) {
-        service.importBooksFromJson(filePath);
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadBooks(@RequestBody UploadFileDto filePath) {
+        service.importBooksFromJson(filePath.getFilePath());
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -112,12 +112,12 @@ public class BookController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Book> delete(@PathVariable Long id) {
 
-            return ResponseEntity.ok(service.deleteBookById(id));
+        return ResponseEntity.ok(service.deleteBookById(id));
 
     }
 
 
-    @Operation(summary = "Look for a book in the library by title", description = "visible for all user")
+    @Operation(summary = "Look for a book in the library by id", description = "visible for registered user")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "book has been found"),
@@ -129,29 +129,10 @@ public class BookController {
     })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
-    public ResponseEntity<Book> getBooksByTitle(@PathVariable Long id) {
+    public ResponseEntity<Book> getBooksById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getBookById(id));
     }
 
-//    @DeleteMapping("/isbn={isbn}")
-//    public BookDto delete(String isbn) {
-//        if (isbn != null) {
-//            BookDto book = service.getBookByIsbn(isbn));
-//            service.deleteBookByIsbn(isbn);
-//            return book;
-//        }
-//        return null;
-//    }
-
-    //    @DeleteMapping("/title={title}")
-//    public BookDto delete(String title) {
-//        if (title != null || title.trim() != "") {
-//            BookDto book = service.getBookByTitle(title);
-//            service.deleteBookByTitle(title);
-//            return book;
-//        }
-//        return null;
-//    }
     @Operation(summary = "Show all books", description = "visible for all")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -168,6 +149,24 @@ public class BookController {
     public ResponseEntity<List<Book>> getAllBooks() {
 
         return ResponseEntity.ok(service.getAllBooks());
+    }
+
+    @Operation(summary = "Show all books of a library by id", description = "visible for all")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "List of books have been provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "books have been found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+
+    })
+    @GetMapping("/library/{id}")
+    public ResponseEntity<List<Book>> getAllBooksByLibrary(@PathVariable Long id) {
+
+        return ResponseEntity.ok(service.getAllBooksByLibraryId(id));
     }
 
 

@@ -1,7 +1,6 @@
 package org.ac.bibliotheque.books.service.interfaces;
 
 import org.ac.bibliotheque.books.domain.dto.BookDto;
-import org.ac.bibliotheque.books.domain.dto.TitleDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
 
 import java.util.List;
