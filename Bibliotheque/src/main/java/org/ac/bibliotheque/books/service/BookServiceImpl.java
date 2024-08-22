@@ -128,15 +128,22 @@ public class BookServiceImpl implements BookService {
     public List<Book> getBookByAuthorSurname(String author) {
 
         String[] arguments = author.split(" ");
-        // splitt into two parts
-        if (arguments[1] == null || arguments[1].trim().isEmpty()) {
+        // split into two parts
+        if (arguments.length == 1) {
+            List<Book> bookList = repository.findAll().stream()
+                    .filter(book -> book.getAuthorSurname().equalsIgnoreCase(arguments[0])).toList();
+            if (bookList.isEmpty()) {
+                return repository.findAll().stream()
+                        .filter(book -> book.getAuthorName().equalsIgnoreCase(arguments[0])).toList();
+            }
+            return bookList;
+        } else if (arguments.length >= 2){
             return repository.findAll().stream()
-                    .filter(book -> book.getAuthorSurname().equals(author)).toList();
-        } else {
-            return repository.findAll().stream()
-                    .filter(book -> book.getAuthorName().equals(arguments[0])
-                            && book.getAuthorSurname().equals(arguments[1]))
+                    .filter(book -> book.getAuthorName().equalsIgnoreCase(arguments[0])
+                            && book.getAuthorSurname().equalsIgnoreCase(arguments[1]))
                     .toList();
+        } else {
+            return null;
         }
     }
 
