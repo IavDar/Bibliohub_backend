@@ -116,6 +116,23 @@ public class BookController {
 
     }
 
+
+    @Operation(summary = "Look for a book in the library by title", description = "visible for all user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",
+                    description = "book has been found"),
+            @ApiResponse(responseCode = "404",
+                    description = "book could not be find",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/{id}")
+    public ResponseEntity<Book> getBooksByTitle(@PathVariable Long id) {
+        return ResponseEntity.ok(service.getBookById(id));
+    }
+
 //    @DeleteMapping("/isbn={isbn}")
 //    public BookDto delete(String isbn) {
 //        if (isbn != null) {
