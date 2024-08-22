@@ -165,7 +165,6 @@ public class BookController {
     })
     @GetMapping("/library/{id}")
     public ResponseEntity<List<Book>> getAllBooksByLibrary(@PathVariable Long id) {
-
         return ResponseEntity.ok(service.getAllBooksByLibraryId(id));
     }
 
