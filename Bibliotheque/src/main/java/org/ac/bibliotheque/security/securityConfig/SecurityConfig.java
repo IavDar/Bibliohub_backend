@@ -62,7 +62,6 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE, "/books/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/{id}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/all").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/books/library/id").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/title={title}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/isbn={isbn}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/books/author={author}").permitAll()

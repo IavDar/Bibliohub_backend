@@ -113,7 +113,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getBookByTitle(String title) {
         return repository.findAll().stream()
-                .filter(x -> x.getTitle().equals(title.trim()))
+                .filter(x -> x.getTitle().contains(title.trim()))
                 .toList();
     }
 
@@ -147,19 +147,6 @@ public class BookServiceImpl implements BookService {
         }
     }
 
-
-//    @Override
-//    public BookDto getBookByAuthorName(String authorName) {
-//        Book book = repository.findByAuthorName(authorName);
-//        return mappingService.mapEntityToDto(book);
-//    }
-//
-//    @Override
-//    public BookDto getBookByAuthorSurname(String authorSurname) {
-//        Book book = repository.findByAuthorName(authorSurname);
-//        return mappingService.mapEntityToDto(book);
-//    }
-
     @Override
     public Book deleteBookById(Long id) {
         Book book = repository.findById(id).orElseThrow(() -> new BookIdNotFoundException(id));
@@ -192,8 +179,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getAllBooksByLibraryId(Long libraryId) {
-        return repository.findAllByLibraryId(libraryId).stream()
-                .toList();
+        return repository.findAllByLibraryId(libraryId);
+
     }
 
     @Override
