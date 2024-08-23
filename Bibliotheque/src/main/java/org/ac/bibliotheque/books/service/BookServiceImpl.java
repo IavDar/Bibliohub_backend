@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -33,49 +34,83 @@ public class BookServiceImpl implements BookService {
         System.out.println("================================================================");
         System.out.println(dto.toString());
 
-        //Library ID check.
-//        change only book by Librarian!!!
+        Book book = repository.findByLibraryIdAndTitle(dto.getLibraryId(), dto.getTitle());
 
-        if (repository.findByTitle(dto.getTitle()) != null) {
-            System.out.println(dto.getTitle() + " already exists");
-            Book book = repository.findByTitle(dto.getTitle());
-            System.out.println(book);
+        if (book == null) {
+            System.out.println(dto.getTitle() + " doesn't exists");
+            book = new Book();
         }
 
-        Book book = new Book();
-
-        if (dto.getTitle() != null) {
-            book.setTitle(dto.getTitle());
-        }
-        if (dto.getIsbn() != null) {
-            book.setIsbn(dto.getIsbn());
-        }
-        if (dto.getAuthorName() != null) {
-            book.setAuthorName(dto.getAuthorName());
-        }
-        if (dto.getAuthorSurname() != null) {
-            book.setAuthorSurname(dto.getAuthorSurname());
-        }
-        if (dto.getYear() != null) {
-            book.setYear(dto.getYear());
-        }
-        if (dto.getPublisher() != null) {
-            book.setPublisher(dto.getPublisher());
-        }
-        if (dto.getQuantity() != null) {
-            book.setQuantity(dto.getQuantity());
-        }
-        if (dto.getAvailable() != null) {
-            book.setAvailable(dto.getAvailable());
-        }
         if (dto.getLibraryId() != null) {
             book.setLibraryId(dto.getLibraryId());
+        }
+
+        if (checkString(dto.getTitle())) {
+            book.setTitle(dto.getTitle());
+        }
+        if (checkDigits(dto.getIsbn())) {
+            book.setIsbn(dto.getIsbn());
+        }
+        if (checkString(dto.getAuthorName())) {
+            book.setAuthorName(dto.getAuthorName());
+        }
+        if (checkString(dto.getAuthorSurname())) {
+            book.setAuthorSurname(dto.getAuthorSurname());
+        }
+        if (checkDigits(dto.getYear())) {
+            if (Integer.parseInt(dto.getYear()) > 1000
+                    && Integer.parseInt(dto.getYear()) < LocalDate.now().getYear()) {
+                book.setYear(dto.getYear());
+            }
+        }
+        if (checkString(dto.getPublisher())) {
+            book.setPublisher(dto.getPublisher());
+        }
+        if (dto.getQuantity() != null && dto.getQuantity() >= 0) {
+            book.setQuantity(dto.getQuantity());
+        } else {
+            if (book.getQuantity() == null) {
+                book.setQuantity(1L);
+            } else {
+                book.setQuantity(book.getQuantity() + 1);
+            }
+        }
+        if (dto.getAvailable() != null && dto.getAvailable() >= 0) {
+            if (dto.getAvailable() > book.getQuantity()) {
+                book.setAvailable(dto.getQuantity());
+            } else {
+                book.setAvailable(dto.getAvailable());
+            }
+        } else {
+            if (book.getAvailable() == null) {
+                book.setAvailable(1L);
+            } else {
+                book.setAvailable(book.getAvailable() + 1);
+            }
+        }
+        if (checkString(dto.getPicture())) {
+            book.setPicture(dto.getPicture());
         }
 
         repository.save(book);
 
         return book;
 
+    }
+
+    private boolean checkString(String text) {
+        if (text != null && !text.trim().isEmpty()) {
+            return true;
+        } else return false;
+    }
+
+    private boolean checkDigits(String number) {
+        for (char c : number.toCharArray()) {
+            if (!Character.isDigit(c)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
@@ -86,19 +121,51 @@ public class BookServiceImpl implements BookService {
         Book newBook = getBookById(book.getId());
 
         if (newBook == null) {
+            System.out.println("nothing to update");
             return null;
         }
-
-        newBook.setTitle(book.getTitle());
-        newBook.setAuthorName(book.getAuthorName());
-        newBook.setAuthorSurname(book.getAuthorSurname());
-        newBook.setYear(book.getYear());
-        newBook.setIsbn(book.getIsbn());
-        newBook.setPublisher(book.getPublisher());
-        newBook.setQuantity(book.getQuantity());
-        newBook.setAvailable(book.getAvailable());
         newBook.setLibraryId(book.getLibraryId());
 
+        if (checkString(newBook.getTitle())) {
+            newBook.setTitle(book.getTitle());
+        }
+        if (checkString(newBook.getAuthorName())) {
+            newBook.setAuthorName(book.getAuthorName());
+        }
+        if (checkString(newBook.getAuthorSurname())) {
+            newBook.setAuthorSurname(book.getAuthorSurname());
+        }
+        if (checkDigits(newBook.getYear())) {
+            newBook.setYear(book.getYear());
+        }
+        if (checkDigits(newBook.getIsbn())) {
+            newBook.setIsbn(book.getIsbn());
+        }
+        if (checkString(newBook.getPublisher())) {
+            newBook.setPublisher(book.getPublisher());
+        }
+        if (book.getQuantity() != null && book.getQuantity() >= 0) {
+            newBook.setQuantity(book.getQuantity());
+        } else {
+            if (newBook.getQuantity() == null) {
+                book.setQuantity(1L);
+            }
+        }
+        if (book.getAvailable() != null && book.getAvailable() >= 0) {
+            if (book.getAvailable() > newBook.getQuantity()) {
+                newBook.setAvailable(newBook.getQuantity());
+            } else {
+                newBook.setAvailable(book.getAvailable());
+            }
+        } else {
+            if (newBook.getAvailable() == null) {
+                book.setAvailable(1L);
+            }
+        }
+        newBook.setAvailable(book.getAvailable());
+        if (checkString(book.getPicture())) {
+            newBook.setPicture(book.getPicture());
+        }
         repository.save(newBook);
 
         return newBook;
@@ -137,7 +204,7 @@ public class BookServiceImpl implements BookService {
                         .filter(book -> book.getAuthorName().equalsIgnoreCase(arguments[0])).toList();
             }
             return bookList;
-        } else if (arguments.length >= 2){
+        } else if (arguments.length >= 2) {
             return repository.findAll().stream()
                     .filter(book -> book.getAuthorName().equalsIgnoreCase(arguments[0])
                             && book.getAuthorSurname().equalsIgnoreCase(arguments[1]))
@@ -179,8 +246,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getAllBooksByLibraryId(Long libraryId) {
+        System.out.println(repository.findAllByLibraryId(libraryId));
         return repository.findAllByLibraryId(libraryId);
-
     }
 
     @Override
@@ -195,7 +262,8 @@ public class BookServiceImpl implements BookService {
         ObjectMapper mapper = new ObjectMapper();
         System.out.println(filePath);
         try {
-            List<Book> books = mapper.readValue(new File(filePath), new TypeReference<List<Book>>() {});
+            List<Book> books = mapper.readValue(new File(filePath), new TypeReference<List<Book>>() {
+            });
             repository.saveAll(books);
             System.out.println("List of books imported successfully");
         } catch (IOException e) {
