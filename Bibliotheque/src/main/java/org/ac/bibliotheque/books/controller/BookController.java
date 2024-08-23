@@ -66,6 +66,9 @@ public class BookController {
     @PostMapping
     public ResponseEntity<Book> addBook(@RequestBody BookDto bookDto) {
         Book book = service.addBook(bookDto);
+        if (book == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(book);
     }
 
@@ -96,6 +99,9 @@ public class BookController {
     @PutMapping
     public ResponseEntity<Book> update(@RequestBody Book book) {
         Book newBook = service.update(book);
+        if (newBook == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(newBook);
     }
 
@@ -130,7 +136,11 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     public ResponseEntity<Book> getBooksById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getBookById(id));
+        Book book = service.getBookById(id);
+        if (book == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(book);
     }
 
     @Operation(summary = "Show all books", description = "visible for all")
@@ -147,8 +157,11 @@ public class BookController {
     })
     @GetMapping("/all")
     public ResponseEntity<List<Book>> getAllBooks() {
-
-        return ResponseEntity.ok(service.getAllBooks());
+        List<Book> books = service.getAllBooks();
+        if (books.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(books);
     }
 
     @Operation(summary = "Show all books of a library by id", description = "visible for all")
@@ -165,7 +178,12 @@ public class BookController {
     })
     @GetMapping("/library/{id}")
     public ResponseEntity<List<Book>> getAllBooksByLibrary(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getAllBooksByLibraryId(id));
+        System.out.println(id);
+        List<Book> books = service.getAllBooksByLibraryId(id);
+        if (books.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(books);
     }
 
 
@@ -182,7 +200,11 @@ public class BookController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/title={title}")
     public ResponseEntity<List<Book>> getBooksByTitle(@PathVariable String title) {
-        return ResponseEntity.ok(service.getBookByTitle(title));
+        List<Book> books = service.getBookByTitle(title);
+        if (books.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(books);
     }
 
     @Operation(summary = "Look for a book in the library by ISBN", description = "visible for all user")
@@ -198,6 +220,10 @@ public class BookController {
     })
     @GetMapping("/isbn={isbn}")
     public ResponseEntity<List<Book>> getBooksByIsbn(@PathVariable String isbn) {
+        List<Book> books = service.getBookByIsbn(isbn);
+        if (books.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(service.getBookByIsbn(isbn));
     }
 
@@ -214,7 +240,11 @@ public class BookController {
     })
     @GetMapping("/author={author}")
     public ResponseEntity<List<Book>> getBooksByAuthorSurname(@PathVariable String author) {
-        return ResponseEntity.ok(service.getBookByAuthorSurname(author));
+        List<Book> books = service.getBookByAuthorSurname(author);
+        if (books.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(books);
     }
 
     @ExceptionHandler(BookTitleNotFoundException.class)
