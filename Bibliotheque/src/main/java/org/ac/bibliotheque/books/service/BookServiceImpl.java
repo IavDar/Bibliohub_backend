@@ -180,7 +180,7 @@ public class BookServiceImpl implements BookService {
     @Override
     public List<Book> getBookByTitle(String title) {
         return repository.findAll().stream()
-                .filter(x -> x.getTitle().contains(title.trim()))
+                .filter(x -> x.getTitle().toLowerCase().contains(title.trim().toLowerCase()))
                 .toList();
     }
 
@@ -198,16 +198,16 @@ public class BookServiceImpl implements BookService {
         // split into two parts
         if (arguments.length == 1) {
             List<Book> bookList = repository.findAll().stream()
-                    .filter(book -> book.getAuthorSurname().equalsIgnoreCase(arguments[0])).toList();
+                    .filter(book -> book.getAuthorSurname().equalsIgnoreCase(arguments[0].toLowerCase())).toList();
             if (bookList.isEmpty()) {
                 return repository.findAll().stream()
-                        .filter(book -> book.getAuthorName().equalsIgnoreCase(arguments[0])).toList();
+                        .filter(book -> book.getAuthorName().equalsIgnoreCase(arguments[0].toLowerCase())).toList();
             }
             return bookList;
         } else if (arguments.length >= 2) {
             return repository.findAll().stream()
-                    .filter(book -> book.getAuthorName().equalsIgnoreCase(arguments[0])
-                            && book.getAuthorSurname().equalsIgnoreCase(arguments[1]))
+                    .filter(book -> book.getAuthorName().equalsIgnoreCase(arguments[0].toLowerCase())
+                            && book.getAuthorSurname().equalsIgnoreCase(arguments[1].toLowerCase()))
                     .toList();
         } else {
             return null;
