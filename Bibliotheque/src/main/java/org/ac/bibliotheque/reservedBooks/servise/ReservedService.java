@@ -3,6 +3,7 @@ package org.ac.bibliotheque.reservedBooks.servise;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
 import org.ac.bibliotheque.user.entity.UserData;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.BookIsEmpty;
@@ -12,6 +13,7 @@ import org.ac.bibliotheque.user.exception_handing.Exceptions.UserNotFoundExcepti
 import org.ac.bibliotheque.user.user_repository.UserRepository;
 import org.ac.bibliotheque.reservedBooks.repository.ReservedListRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -47,9 +49,35 @@ public class ReservedService {
         bookRepository.saveAll(booksInCart);
     }
 
+    @Transactional
+    public void reservedListBook(Long userId, List<Book> list) {
+        UserData user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        if (user.getCity() == null || user.getCountry() == null || user.getName() == null || user.getUsername() == null
+                || user.getStreet() == null || user.getNumber() == null || user.getZip() == null || user.getPhone() == null) {
+            throw new UserForbidden("Fill in the required fields");
+        }
 
-    public List<Book> checkUserWishlist(Long userId){
-        UserData userData = userRepository.findById(userId).orElseThrow(()->new UserNotFoundException(String.format("User %s not found", userId)));
+        for (Book book : list) {
+            Long bookId = book.getId();
+            Long libraryId = book.getLibraryId();
+
+            book = bookRepository.findByIdAndLibraryId(bookId, libraryId).orElseThrow(
+                    () -> new BookTitleNotFoundException("Book not found"));
+            if (book.getAvailable() <= 0) {
+                throw new BookIsEmpty(String.format("Book %s is out of stock", book.getTitle()));
+            }
+            user.getReservedList().addBook(book);
+            book.setQuantity(book.getQuantity() - 1);
+        }
+        user.getCart().clearCart();
+        userRepository.save(user);
+
+    }
+
+
+    public List<Book> checkUserReservedBook(Long userId) {
+        UserData userData = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", userId)));
         return userData.getReservedList().getBooks();
     }
 }

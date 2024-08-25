@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
+import org.ac.bibliotheque.cart.dto.BookRequestDto;
 import org.ac.bibliotheque.user.entity.UserData;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.BookIsEmpty;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.UserForbidden;
@@ -60,6 +61,28 @@ public class CartService {
         userData.getCart().deleteBook(book);
         userRepository.save(userData);
         return new ArrayList<>(userData.getCart().getBookList());
+    }
+
+
+    public void addListBookToUserCart(Long userId, List<BookRequestDto> list) {
+
+        UserData userData = userRepository.findById(userId).orElseThrow(
+
+                () -> new UserNotFoundException(String.format("User %s not found", userId)));
+        for (BookRequestDto bookRequestDto : list) {
+            Long bookId = bookRequestDto.getBookId();
+            Long libraryId = bookRequestDto.getLibraryId();
+
+            Book book = bookRepository.findByIdAndLibraryId(bookId, libraryId).orElseThrow(
+                    () -> new BookTitleNotFoundException("Book not found")
+            );
+
+            userData.getCart().addBook(book);
+
+
+        }
+
+        userRepository.save(userData);
     }
 
 

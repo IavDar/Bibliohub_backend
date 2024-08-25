@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/cart/{userId}/books/{bookId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/cart/{userId}").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/cart/{userId}/book/{bookId}").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/reserved/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/reserved/{userId}").permitAll()
                         .requestMatchers(HttpMethod.GET, "/reserved/{userId}").permitAll()
                         .requestMatchers(HttpMethod.POST, "/libraries/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/libraries/{id}").permitAll()
