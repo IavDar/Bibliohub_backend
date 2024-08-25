@@ -49,8 +49,19 @@ public class ReservedBooksController {
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
     @GetMapping("{userId}")
-    public ResponseEntity<List<Book>> getBooksInUserCart(@PathVariable Long userId) {
-        List<Book> books = reservedService.checkUserWishlist(userId);
+    public ResponseEntity<List<Book>> listUserReserved(@PathVariable Long userId) {
+        List<Book> books = reservedService.checkUserReservedBook(userId);
         return ResponseEntity.ok(books);
     }
+
+
+    @PostMapping("{userId}")
+    public ResponseEntity<String> reservedListBooks(@PathVariable(name = "userId") Long userId,
+                                                    @RequestBody List<Book> bookIds) {
+        reservedService.reservedListBook(userId, bookIds);
+        return ResponseEntity.ok("You have successfully booked your books");
+
+    }
+
+
 }

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="create-foreign-key-reserved-book" author="admin">
+        <addForeignKeyConstraint baseTableName="reserved_books"
+                                 baseColumnNames="reserved_id"
+                                 constraintName="fk_reserved_reserved2_to_books"
+                                 referencedTableName="reserved"
+                                 referencedColumnNames="id"/>
+
+
+        <addForeignKeyConstraint baseTableName="reserved_books"
+                                 baseColumnNames="book_id"
+                                 constraintName="fk_reserved2_book_to_books"
+                                 referencedTableName="books"
+                                 referencedColumnNames="id"/>
+
+    </changeSet>
+</databaseChangeLog>

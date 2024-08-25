@@ -216,4 +216,10 @@ public class BookServiceImpl implements BookService {
 //    }
 
 
+
+    public Book findBookByIdAndLibrary(Long bookId, Long libraryId) {
+        return repository.findByIdAndLibraryId(bookId, libraryId)
+                .orElseThrow(() -> new BookIdNotFoundException(bookId));
+    }
+
 }
