@@ -4,7 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.ac.bibliotheque.books.domain.dto.BookDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookAuthorNotFoundException;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookIdNotFoundException;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookIsbnNotFoundException;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
 import org.ac.bibliotheque.books.service.interfaces.BookService;
 import org.ac.bibliotheque.books.service.mapping.BookMappingService;
@@ -37,8 +40,7 @@ public class BookServiceImpl implements BookService {
         Book book = repository.findByLibraryIdAndTitle(dto.getLibraryId(), dto.getTitle());
 
         if (book == null) {
-            System.out.println(dto.getTitle() + " doesn't exists");
-            book = new Book();
+            throw new BookTitleNotFoundException(dto.getTitle());
         }
 
         if (dto.getLibraryId() != null) {
@@ -49,7 +51,7 @@ public class BookServiceImpl implements BookService {
             book.setTitle(dto.getTitle());
         }
         if (checkDigits(dto.getIsbn())) {
-            book.setIsbn(dto.getIsbn());
+            book.setIsbn(dto.getIsbn().replaceAll("\\D", ""));
         }
         if (checkString(dto.getAuthorName())) {
             book.setAuthorName(dto.getAuthorName());
@@ -121,8 +123,7 @@ public class BookServiceImpl implements BookService {
         Book newBook = getBookById(book.getId());
 
         if (newBook == null) {
-            System.out.println("nothing to update");
-            return null;
+            throw new BookIdNotFoundException(book.getId());
         }
         newBook.setLibraryId(book.getLibraryId());
 
@@ -139,7 +140,7 @@ public class BookServiceImpl implements BookService {
             newBook.setYear(book.getYear());
         }
         if (checkDigits(newBook.getIsbn())) {
-            newBook.setIsbn(book.getIsbn());
+            newBook.setIsbn(book.getIsbn().replaceAll("\\D", ""));
         }
         if (checkString(newBook.getPublisher())) {
             newBook.setPublisher(book.getPublisher());
@@ -179,16 +180,24 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getBookByTitle(String title) {
-        return repository.findAll().stream()
+        List<Book> books = repository.findAll().stream()
                 .filter(x -> x.getTitle().toLowerCase().contains(title.trim().toLowerCase()))
                 .toList();
+        if (books.isEmpty()) {
+            throw new BookTitleNotFoundException(title);
+        }
+        return books;
     }
 
     @Override
     public List<Book> getBookByIsbn(String isbn) {
-        return repository.findAll().stream()
-                .filter(x -> x.getIsbn().equals(isbn.trim()))
+        List<Book> books = repository.findAll().stream()
+                .filter(x -> x.getIsbn().equals(isbn.trim().replaceAll("\\D", "")))
                 .toList();
+        if (books.isEmpty()) {
+            throw new BookIsbnNotFoundException(isbn);
+        }
+        return books;
     }
 
     @Override
@@ -210,20 +219,26 @@ public class BookServiceImpl implements BookService {
                             && book.getAuthorSurname().equalsIgnoreCase(arguments[1].toLowerCase()))
                     .toList();
         } else {
-            return null;
+            throw new BookAuthorNotFoundException(author);
         }
     }
 
     @Override
     public Book deleteBookById(Long id) {
         Book book = repository.findById(id).orElseThrow(() -> new BookIdNotFoundException(id));
+        if (book == null) {
+            throw new BookIdNotFoundException(id);
+        }
         repository.deleteById(id);
         return book;
     }
 
     @Override
     public Book deleteBookByIsbn(String isbn) {
-        Book book = repository.findByIsbn(isbn);
+        Book book = repository.findByIsbn(isbn.trim().replaceAll("\\D", ""));
+        if (book == null) {
+            throw new BookIsbnNotFoundException(isbn.trim().replaceAll("\\D", ""));
+        }
         repository.deleteByIsbn(isbn);
         return book;
     }
@@ -231,28 +246,39 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book deleteBookByTitle(String title) {
         Book book = repository.findByTitle(title);
+        if (book == null) {
+            throw new BookTitleNotFoundException(title);
+        }
         repository.deleteByTitle(title);
         return book;
     }
 
     @Override
     public List<Book> getAllBooks() {
-
-        return repository.findAll().stream()
+        List<Book> books =  repository.findAll().stream()
                 .filter(x -> x.getAvailable() > 0)
                 .toList();
-
+        if (books.isEmpty()) {
+            throw new RuntimeException("No Books Found");
+        }
+        return books;
     }
 
     @Override
     public List<Book> getAllBooksByLibraryId(Long libraryId) {
-        System.out.println(repository.findAllByLibraryId(libraryId));
-        return repository.findAllByLibraryId(libraryId);
+        List<Book> books =  repository.findAllByLibraryId(libraryId);
+        if (books.isEmpty()) {
+            throw new RuntimeException("No Books Found");
+        }
+        return books;
     }
 
     @Override
     public void deleteAllBooksByLibraryId(Long libraryId) {
         List<Book> allBooksByLibraryId = getAllBooksByLibraryId(libraryId);
+        if (allBooksByLibraryId.isEmpty()) {
+            throw new RuntimeException("No Books Found");
+        }
         for (Book book : allBooksByLibraryId) {
             deleteBookById(book.getId());
         }
@@ -276,7 +302,6 @@ public class BookServiceImpl implements BookService {
 //    public void deleteByIsbn(Long isbn) {
 //        repository.delete(isbn);
 //    }
-
 
 
     public Book findBookByIdAndLibrary(Long bookId, Long libraryId) {
