@@ -41,7 +41,12 @@ public class BookController {
                     description = "books could not be uploaded",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "book is empty or null. File is empty or wrong direction",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Bad request, wrong book data provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @ResponseStatus(HttpStatus.OK)
     @PostMapping("/upload")
@@ -61,7 +66,12 @@ public class BookController {
                     description = "book could not be added",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "book is empty or null",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Bad request, wrong book data provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @PostMapping
     public ResponseEntity<Book> addBook(@RequestBody BookDto bookDto) {
@@ -94,7 +104,12 @@ public class BookController {
                     description = "book could not be find",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "book is empty or null",
+                    content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Bad request, wrong book data provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @PutMapping
     public ResponseEntity<Book> update(@RequestBody Book book) {
@@ -112,6 +127,12 @@ public class BookController {
                     content = @Content(mediaType = "application/json")),
             @ApiResponse(responseCode = "404",
                     description = "book could not be find",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "400", description = "Bad request, wrong book data provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Access denied",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
@@ -131,7 +152,12 @@ public class BookController {
                     description = "book could not be find",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "Bad request, wrong book ID provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Access denied",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
@@ -153,7 +179,12 @@ public class BookController {
                     description = "books have been found",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "books have been found",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Access denied",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @GetMapping("/all")
     public ResponseEntity<List<Book>> getAllBooks() {
@@ -174,7 +205,12 @@ public class BookController {
                     description = "books have been found",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "Bad request, wrong Library ID provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Access denied",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @GetMapping("/library/{id}")
     public ResponseEntity<List<Book>> getAllBooksByLibrary(@PathVariable Long id) {
@@ -195,7 +231,12 @@ public class BookController {
                     description = "book could not be find",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "Bad request, wrong book title provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Access denied",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/title={title}")
@@ -216,7 +257,12 @@ public class BookController {
                     description = "book could not be find",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "Bad request, wrong ISBN provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Access denied",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @GetMapping("/isbn={isbn}")
     public ResponseEntity<List<Book>> getBooksByIsbn(@PathVariable String isbn) {
@@ -236,7 +282,12 @@ public class BookController {
                     description = "book could not be find",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
-
+            @ApiResponse(responseCode = "400", description = "Bad request, wrong Author provided",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "Access denied",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = BookApiExceptionInfo.class)))
     })
     @GetMapping("/author={author}")
     public ResponseEntity<List<Book>> getBooksByAuthorSurname(@PathVariable String author) {
