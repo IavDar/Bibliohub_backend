@@ -2,9 +2,14 @@ package org.ac.bibliotheque.reservedBooks.servise;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.ac.bibliotheque.books.domain.dto.BookDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
+import org.ac.bibliotheque.library.exception_handling.exceptions.LibraryNotFoundException;
+import org.ac.bibliotheque.library.repository.LibraryRepository;
+import org.ac.bibliotheque.reservedBooks.dto.BooksReservedDto;
+import org.ac.bibliotheque.reservedBooks.entity.ReservedList;
 import org.ac.bibliotheque.user.entity.UserData;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.BookIsEmpty;
 import org.ac.bibliotheque.user.exception_handing.Exceptions.CartIsEmpty;
@@ -15,6 +20,7 @@ import org.ac.bibliotheque.reservedBooks.repository.ReservedListRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,9 +28,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ReservedService {
 
-    private final ReservedListRepository wishlistRepository;
+    private final ReservedListRepository reservedListRepository;
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
+    private final LibraryRepository libraryRepository;
 
     public void reservedBook(Long userId) {
         UserData user = userRepository.findById(userId)
@@ -35,7 +42,7 @@ public class ReservedService {
         }
         List<Book> booksInCart = user.getCart().getBookList();
         if (booksInCart.isEmpty()) {
-            throw new CartIsEmpty("The basket is empty");
+            throw new CartIsEmpty("The cart is empty");
         }
         for (Book book : booksInCart) {
             if (book.getAvailable() <= 0) {
@@ -80,4 +87,56 @@ public class ReservedService {
         UserData userData = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", userId)));
         return userData.getReservedList().getBooks();
     }
+
+    public List<BooksReservedDto> getReservedBookLibrary(Long libraryId) {
+        List<UserData> users = userRepository.findAll();
+        List<BooksReservedDto> result = new ArrayList<>();
+        libraryRepository.findById(libraryId).orElseThrow(() ->
+                new LibraryNotFoundException(String.format("Library %s not found", libraryId)));
+
+        for (UserData user : users) {
+            ReservedList reservedList = reservedListRepository.findByUserDataId(user.getId()).orElseThrow(
+                    () -> new UserNotFoundException("User not found")
+            );
+            List<BookDto> reservedBooks = reservedList.getBooks().stream()
+                    .filter(book -> book.getLibraryId().equals(libraryId))
+                    .map(book -> {
+                        BookDto bookDto = new BookDto();
+                        bookDto.setTitle(book.getTitle());
+                        bookDto.setAuthorName(book.getAuthorName());
+                        bookDto.setAuthorSurname(book.getAuthorSurname());
+                        bookDto.setYear(book.getYear());
+                        bookDto.setIsbn(book.getIsbn());
+                        bookDto.setPublisher(book.getPublisher());
+                        bookDto.setLibraryId(book.getLibraryId());
+                        bookDto.setQuantity(book.getQuantity());
+                        bookDto.setAvailable(book.getAvailable());
+                        return bookDto;
+                    })
+                    .toList();
+            if (!reservedBooks.isEmpty()){
+                BooksReservedDto booksReservedDto = new BooksReservedDto();
+                booksReservedDto.setName(user.getName());
+                booksReservedDto.setEmail(user.getEmail());
+                booksReservedDto.setUserId(user.getId());
+                booksReservedDto.setReservedBooks(reservedBooks);
+                result.add(booksReservedDto);
+            }
+
+
+        }
+        return result;
+
+    }
+
+//    public List<Book> returnBook(Long userId,Long bookId){
+//
+//
+//
+//
+//    }
+
+
+
+
 }
