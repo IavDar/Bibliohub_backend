@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.reservedBooks.dto.BooksReservedDto;
 import org.ac.bibliotheque.user.exception_handing.ApiExceptionInfo;
 import org.ac.bibliotheque.reservedBooks.servise.ReservedService;
 import org.springframework.http.ResponseEntity;
@@ -48,19 +49,41 @@ public class ReservedBooksController {
             @ApiResponse(responseCode = "200", description = "User's book list successfully received"),
             @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ApiExceptionInfo.class)))})
-    @GetMapping("{userId}")
+    @GetMapping("/user/{userId}")
     public ResponseEntity<List<Book>> listUserReserved(@PathVariable Long userId) {
         List<Book> books = reservedService.checkUserReservedBook(userId);
         return ResponseEntity.ok(books);
     }
 
 
-    @PostMapping("{userId}")
-    public ResponseEntity<String> reservedListBooks(@PathVariable(name = "userId") Long userId,
+    @Operation(summary = "Method for booked books by user", description = "Available to User")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "The user has successfully booked books"),
+            @ApiResponse(responseCode = "404", description = "User not found", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "403", description = "In order to book a book, the user must fill in his details", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "404", description = "Book not found", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class))),
+            @ApiResponse(responseCode = "410", description = "Book out of stock", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class)))})
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<String> reservedUserListBooks(@PathVariable(name = "userId") Long userId,
                                                     @RequestBody List<Book> bookIds) {
         reservedService.reservedListBook(userId, bookIds);
-        return ResponseEntity.ok("You have successfully booked your books");
+        return ResponseEntity.ok("You have successfully reserved your books");
 
+    }
+
+    @Operation(summary = "View booked books for a specific library", description = "Available to Library and Administrator")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of books of the booked user in this library"),
+            @ApiResponse(responseCode = "404", description = "Library not found", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ApiExceptionInfo.class)))})
+    @GetMapping("/library/{libraryId}")
+    public ResponseEntity<List<BooksReservedDto>> getUsersWithReservedBooksByLibrary(@PathVariable(name = "libraryId") Long libraryId) {
+        List<BooksReservedDto> userReserveBooks = reservedService.getReservedBookLibrary(libraryId);
+        return ResponseEntity.ok(userReserveBooks);
     }
 
 
