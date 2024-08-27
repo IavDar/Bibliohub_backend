@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class BookServiceImpl implements BookService {
@@ -34,13 +35,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book addBook(BookDto dto) {
 
-        System.out.println("================================================================");
-        System.out.println(dto.toString());
-
-        Book book = repository.findByLibraryIdAndTitle(dto.getLibraryId(), dto.getTitle());
-
+//        System.out.println("======= Book Service =========================================================");
+//        System.out.println(dto.toString() + " Library ID " + dto.getLibraryId());
+//        System.out.println();
+        Book book = repository.findByTitleAndLibraryId(dto.getTitle(), dto.getLibraryId());
         if (book == null) {
-            throw new BookTitleNotFoundException(dto.getTitle());
+            book = new Book();
         }
 
         if (dto.getLibraryId() != null) {
@@ -93,6 +93,7 @@ public class BookServiceImpl implements BookService {
         if (checkString(dto.getPicture())) {
             book.setPicture(dto.getPicture());
         }
+//        System.out.println(book.toString());
 
         repository.save(book);
 
