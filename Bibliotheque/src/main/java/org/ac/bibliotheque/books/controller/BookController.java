@@ -75,25 +75,15 @@ public class BookController {
     })
     @PostMapping
     public ResponseEntity<Book> addBook(@RequestBody BookDto bookDto) {
+//        System.out.println("=======Book Controller =======================================");
         Book book = service.addBook(bookDto);
+//        System.out.println("Book: " + book);
         if (book == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(book);
     }
 
-    /*  JSON answer:
-    {
-        "id": 1,
-        "title": "History",
-        "author": "Bergmann",
-        "ISBN": "657-8-16",
-        "year": 2010,
-        "library": "Central Library"
-        "quantity": 1,
-        "available": 1
-        }
-    */
     @Operation(summary = "edit a book in the library", description = "visible for library: provide id to find changeable book and other parameter to change them.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
@@ -106,7 +96,7 @@ public class BookController {
                             schema = @Schema(implementation = BookApiExceptionInfo.class))),
             @ApiResponse(responseCode = "400", description = "book is empty or null",
                     content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = BookApiExceptionInfo.class))),
+                            schema = @Schema(implementation = BookApiExceptionInfo.class))),
             @ApiResponse(responseCode = "403", description = "Bad request, wrong book data provided",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = BookApiExceptionInfo.class)))
@@ -316,6 +306,7 @@ public class BookController {
         return new ResponseBook(e.getMessage());
     }
 
+
     /*
     @GetMapping("/books")
     public BookDto getBooksByParameter(@RequestParam String param) {
@@ -335,5 +326,16 @@ public class BookController {
         }
     }
 */
-
+    /*  JSON answer:
+    {
+        "id": 1,
+        "title": "History",
+        "author": "Bergmann",
+        "ISBN": "657-8-16",
+        "year": 2010,
+        "library": "Central Library"
+        "quantity": 1,
+        "available": 1
+        }
+    */
 }

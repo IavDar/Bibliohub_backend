@@ -25,7 +25,7 @@ public class BookDto {
 
     @Override
     public String toString() {
-        return String.format("Book DTO: Book Name - %s, Author: - %s %s, ISBN: - %s",
-                title, authorName, authorSurname, isbn );
+        return String.format("Book DTO: Book Name - %s, Author: - %s %s, ISBN: - %s, from Library: %d",
+                title, authorName, authorSurname, isbn, libraryId );
     }
 }
