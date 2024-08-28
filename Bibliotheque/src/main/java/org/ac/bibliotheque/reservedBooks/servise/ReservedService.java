@@ -4,8 +4,10 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.ac.bibliotheque.books.domain.dto.BookDto;
 import org.ac.bibliotheque.books.domain.entity.Book;
+import org.ac.bibliotheque.books.exception_handling.exceptions.BookIdNotFoundException;
 import org.ac.bibliotheque.books.exception_handling.exceptions.BookTitleNotFoundException;
 import org.ac.bibliotheque.books.repository.BookRepository;
+import org.ac.bibliotheque.library.domain.entity.Library;
 import org.ac.bibliotheque.library.exception_handling.exceptions.LibraryNotFoundException;
 import org.ac.bibliotheque.library.repository.LibraryRepository;
 import org.ac.bibliotheque.reservedBooks.dto.BooksReservedDto;
@@ -21,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 @Data
 @Service
@@ -114,7 +118,7 @@ public class ReservedService {
                         return bookDto;
                     })
                     .toList();
-            if (!reservedBooks.isEmpty()){
+            if (!reservedBooks.isEmpty()) {
                 BooksReservedDto booksReservedDto = new BooksReservedDto();
                 booksReservedDto.setName(user.getName());
                 booksReservedDto.setEmail(user.getEmail());
@@ -129,14 +133,38 @@ public class ReservedService {
 
     }
 
-//    public List<Book> returnBook(Long userId,Long bookId){
-//
-//
-//
-//
-//    }
+    @Transactional
+    public void returnBook(Long userId, Long bookId, Long libraryId) {
+        UserData userData = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", userId)));
 
+        Library library = libraryRepository.findById(libraryId)
+                .orElseThrow(() -> new LibraryNotFoundException(String.format("Library %s not found", libraryId)));
 
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookTitleNotFoundException("Book not found"));
 
+        if (!book.getLibraryId().equals(library.getId())) {
+            throw new LibraryNotFoundException("The book does not belong to the specified library");
+        }
+
+        ReservedList reservedList = userData.getReservedList();
+        List<Book> bookList = reservedList.getBooks();
+
+        Optional<Book> bookToReturn = bookList.stream()
+                .filter(b -> b.getId().equals(bookId) && b.getLibraryId().equals(libraryId))
+                .findFirst();
+
+        if (bookToReturn.isPresent()) {
+            bookList.remove(bookToReturn.get());
+            book.setQuantity(book.getQuantity() + 1);
+        } else {
+            throw new BookIsEmpty(String.format("Book %s is not reserved by the user or belongs to another library", book.getTitle()));
+        }
+
+        reservedListRepository.save(reservedList);
+        userRepository.save(userData);
+        bookRepository.save(book);
+    }
 
 }

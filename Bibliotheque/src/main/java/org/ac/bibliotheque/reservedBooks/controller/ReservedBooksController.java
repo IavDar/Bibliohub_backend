@@ -86,5 +86,19 @@ public class ReservedBooksController {
         return ResponseEntity.ok(userReserveBooks);
     }
 
+@Operation(summary = "the user returned this book",description = "available to the library and admin")
+@ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "the user returned the book"),
+        @ApiResponse(responseCode = "404",description = "user library or book not found",content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ApiExceptionInfo.class))),
+        @ApiResponse(responseCode = "410",description = "this user did not have this book",content = @Content(mediaType = "application/json",
+                schema = @Schema(implementation = ApiExceptionInfo.class)))
+})
+    @PutMapping("delete-book/users/{userId}/book/{bookId}/library/{libraryId}")
+    public ResponseEntity<String> returnBook(@PathVariable Long userId, @PathVariable Long bookId,@PathVariable Long libraryId) {
+        reservedService.returnBook(userId, bookId , libraryId);
+        return ResponseEntity.ok("updatedBookList");
+    }
+
 
 }
