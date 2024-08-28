@@ -124,12 +124,12 @@ public class UserController {
         return ResponseEntity.ok(responseDto);
 
     }
-
-    @GetMapping("/{email}")
-    public ResponseEntity<UserUpdateDto> findUserByEmail(@PathVariable(name = "email") UserEmailDto email) {
-        UserUpdateDto userResponseDto = userService.findUsersByEmail(email);
-        return ResponseEntity.ok(userResponseDto);
-    }
+//
+//    @GetMapping("/{email}")
+//    public ResponseEntity<UserUpdateDto> findUserByEmail(@PathVariable(name = "email") UserEmailDto email) {
+//        UserUpdateDto userResponseDto = userService.findUsersByEmail(email);
+//        return ResponseEntity.ok(userResponseDto);
+//    }
 
     @Operation(summary = "update user data", description = "available only to the user")
     @ApiResponses(value = {
